@@ -13,6 +13,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -28,9 +29,9 @@ class Ui_Dialog
 public:
     QVBoxLayout *verticalLayout_3;
     QGroupBox *loginGroupBox;
-    QVBoxLayout *verticalLayout_2;
-    QTableWidget *tableWidget;
+    QGridLayout *gridLayout;
     QSpinBox *spinBoxLayer;
+    QTableWidget *tableWidget;
     QGroupBox *bottonGroupBox;
     QHBoxLayout *horizontalLayout_2;
     QSpacerItem *horizontalSpacer_2;
@@ -46,17 +47,17 @@ public:
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         loginGroupBox = new QGroupBox(Dialog);
         loginGroupBox->setObjectName(QString::fromUtf8("loginGroupBox"));
-        verticalLayout_2 = new QVBoxLayout(loginGroupBox);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        tableWidget = new QTableWidget(loginGroupBox);
-        tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
-
-        verticalLayout_2->addWidget(tableWidget);
-
+        gridLayout = new QGridLayout(loginGroupBox);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         spinBoxLayer = new QSpinBox(loginGroupBox);
         spinBoxLayer->setObjectName(QString::fromUtf8("spinBoxLayer"));
 
-        verticalLayout_2->addWidget(spinBoxLayer);
+        gridLayout->addWidget(spinBoxLayer, 1, 0, 1, 2);
+
+        tableWidget = new QTableWidget(loginGroupBox);
+        tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
+
+        gridLayout->addWidget(tableWidget, 0, 0, 1, 2);
 
 
         verticalLayout_3->addWidget(loginGroupBox);

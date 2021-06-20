@@ -101,6 +101,7 @@ private slots:
 	void objectLayersAccepted();
 	void updateImage();
 	void drawObject(Object object);
+	void on_pushButtonChangeLayer_clicked();
 
 	//Transformations
 	void on_pushButtonClear_clicked();

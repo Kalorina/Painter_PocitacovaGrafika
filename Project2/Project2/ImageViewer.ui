@@ -126,7 +126,7 @@
        <string>Layers &amp; Transformations</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Transformations</string>
@@ -233,20 +233,37 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="2">
+           <widget class="QPushButton" name="pushButtonChangeLayer">
+            <property name="text">
+             <string>Change Layer</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Change Current Layer to</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="spinBoxNewLayer"/>
+          </item>
          </layout>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="pushButtonLayer">
-         <property name="text">
-          <string>Choose Object </string>
-         </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QPushButton" name="pushButtonColorPalette">
          <property name="text">
           <string>Color Palette</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButtonLayer">
+         <property name="text">
+          <string>Objects </string>
          </property>
         </widget>
        </item>

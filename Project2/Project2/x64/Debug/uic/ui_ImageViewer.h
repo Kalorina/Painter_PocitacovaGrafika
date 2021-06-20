@@ -23,6 +23,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
@@ -69,8 +70,11 @@ public:
     QDoubleSpinBox *spinBoxShear;
     QLabel *label_5;
     QLabel *label_4;
-    QPushButton *pushButtonLayer;
+    QPushButton *pushButtonChangeLayer;
+    QLabel *label_7;
+    QSpinBox *spinBoxNewLayer;
     QPushButton *pushButtonColorPalette;
+    QPushButton *pushButtonLayer;
     QTabWidget *tabWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -249,18 +253,33 @@ public:
 
         gridLayout_4->addWidget(label_4, 2, 1, 1, 1);
 
+        pushButtonChangeLayer = new QPushButton(groupBox_2);
+        pushButtonChangeLayer->setObjectName(QString::fromUtf8("pushButtonChangeLayer"));
 
-        gridLayout_2->addWidget(groupBox_2, 2, 0, 1, 1);
+        gridLayout_4->addWidget(pushButtonChangeLayer, 4, 2, 1, 1);
 
-        pushButtonLayer = new QPushButton(groupBox);
-        pushButtonLayer->setObjectName(QString::fromUtf8("pushButtonLayer"));
+        label_7 = new QLabel(groupBox_2);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
 
-        gridLayout_2->addWidget(pushButtonLayer, 0, 0, 1, 1);
+        gridLayout_4->addWidget(label_7, 4, 0, 1, 1);
+
+        spinBoxNewLayer = new QSpinBox(groupBox_2);
+        spinBoxNewLayer->setObjectName(QString::fromUtf8("spinBoxNewLayer"));
+
+        gridLayout_4->addWidget(spinBoxNewLayer, 4, 1, 1, 1);
+
+
+        gridLayout_2->addWidget(groupBox_2, 3, 0, 1, 1);
 
         pushButtonColorPalette = new QPushButton(groupBox);
         pushButtonColorPalette->setObjectName(QString::fromUtf8("pushButtonColorPalette"));
 
         gridLayout_2->addWidget(pushButtonColorPalette, 1, 0, 1, 1);
+
+        pushButtonLayer = new QPushButton(groupBox);
+        pushButtonLayer->setObjectName(QString::fromUtf8("pushButtonLayer"));
+
+        gridLayout_2->addWidget(pushButtonLayer, 0, 0, 1, 1);
 
 
         horizontalLayout->addWidget(groupBox);
@@ -338,8 +357,10 @@ public:
         pushButtonShear->setText(QCoreApplication::translate("ImageViewerClass", "Shear", nullptr));
         label_5->setText(QCoreApplication::translate("ImageViewerClass", "(deg)", nullptr));
         label_4->setText(QCoreApplication::translate("ImageViewerClass", "factor (y)", nullptr));
-        pushButtonLayer->setText(QCoreApplication::translate("ImageViewerClass", "Choose Object ", nullptr));
+        pushButtonChangeLayer->setText(QCoreApplication::translate("ImageViewerClass", "Change Layer", nullptr));
+        label_7->setText(QCoreApplication::translate("ImageViewerClass", "Change Current Layer to", nullptr));
         pushButtonColorPalette->setText(QCoreApplication::translate("ImageViewerClass", "Color Palette", nullptr));
+        pushButtonLayer->setText(QCoreApplication::translate("ImageViewerClass", "Objects ", nullptr));
         menuFile->setTitle(QCoreApplication::translate("ImageViewerClass", "File", nullptr));
         menuImage->setTitle(QCoreApplication::translate("ImageViewerClass", "Image", nullptr));
     } // retranslateUi

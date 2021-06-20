@@ -514,7 +514,7 @@ void ImageViewer::objectLayersAccepted()
 	currentLayer = objectLayers->getLayer();
 	if (objects.size() < currentLayer)
 	{
-		msgBox.setText("Not Enough Objects.");
+		msgBox.setText("Wrong layer.");
 		msgBox.exec();
 		currentLayer = -1;
 		return;
@@ -547,6 +547,20 @@ void ImageViewer::drawObject(Object object)
 	{
 		w->draw(object.getPoints(), object.getColor(), ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 	}
+}
+void ImageViewer::on_pushButtonChangeLayer_clicked()
+{
+	int newLayer = ui->spinBoxNewLayer->value();
+	qDebug() << newLayer;
+	/*currentLayer = newLayer;
+	if (objects.size() < currentLayer)
+	{
+		msgBox.setText("Wrong layer.");
+		msgBox.exec();
+		currentLayer = -1;
+		return;
+	}
+	updateImage();*/
 }
 
 //Transformations
