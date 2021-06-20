@@ -58,18 +58,17 @@ public:
     QGridLayout *gridLayout_2;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_4;
-    QLabel *label_6;
-    QPushButton *pushButtonSymetry;
-    QDoubleSpinBox *spinBoxScale_2;
-    QDoubleSpinBox *spinBoxShear;
     QPushButton *pushButtonRotate;
-    QPushButton *pushButtonShear;
-    QLabel *label_3;
+    QLabel *label_6;
+    QDoubleSpinBox *spinBoxScale_2;
     QDoubleSpinBox *spinBoxScale_1;
-    QLabel *label_4;
-    QLabel *label_5;
     QPushButton *pushButtonScale;
     QDoubleSpinBox *spinBoxRotate;
+    QLabel *label_3;
+    QPushButton *pushButtonShear;
+    QDoubleSpinBox *spinBoxShear;
+    QLabel *label_5;
+    QLabel *label_4;
     QPushButton *pushButtonLayer;
     QPushButton *pushButtonColorPalette;
     QTabWidget *tabWidget;
@@ -183,15 +182,15 @@ public:
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
         gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
+        pushButtonRotate = new QPushButton(groupBox_2);
+        pushButtonRotate->setObjectName(QString::fromUtf8("pushButtonRotate"));
+
+        gridLayout_4->addWidget(pushButtonRotate, 0, 0, 1, 1);
+
         label_6 = new QLabel(groupBox_2);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
         gridLayout_4->addWidget(label_6, 3, 1, 1, 1);
-
-        pushButtonSymetry = new QPushButton(groupBox_2);
-        pushButtonSymetry->setObjectName(QString::fromUtf8("pushButtonSymetry"));
-
-        gridLayout_4->addWidget(pushButtonSymetry, 4, 0, 1, 1);
 
         spinBoxScale_2 = new QDoubleSpinBox(groupBox_2);
         spinBoxScale_2->setObjectName(QString::fromUtf8("spinBoxScale_2"));
@@ -201,29 +200,6 @@ public:
 
         gridLayout_4->addWidget(spinBoxScale_2, 2, 2, 1, 1);
 
-        spinBoxShear = new QDoubleSpinBox(groupBox_2);
-        spinBoxShear->setObjectName(QString::fromUtf8("spinBoxShear"));
-        spinBoxShear->setMinimum(-99.989999999999995);
-        spinBoxShear->setSingleStep(0.010000000000000);
-        spinBoxShear->setValue(0.000000000000000);
-
-        gridLayout_4->addWidget(spinBoxShear, 3, 2, 1, 1);
-
-        pushButtonRotate = new QPushButton(groupBox_2);
-        pushButtonRotate->setObjectName(QString::fromUtf8("pushButtonRotate"));
-
-        gridLayout_4->addWidget(pushButtonRotate, 0, 0, 1, 1);
-
-        pushButtonShear = new QPushButton(groupBox_2);
-        pushButtonShear->setObjectName(QString::fromUtf8("pushButtonShear"));
-
-        gridLayout_4->addWidget(pushButtonShear, 3, 0, 1, 1);
-
-        label_3 = new QLabel(groupBox_2);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-
-        gridLayout_4->addWidget(label_3, 1, 1, 1, 1);
-
         spinBoxScale_1 = new QDoubleSpinBox(groupBox_2);
         spinBoxScale_1->setObjectName(QString::fromUtf8("spinBoxScale_1"));
         spinBoxScale_1->setMinimum(-99.989999999999995);
@@ -231,16 +207,6 @@ public:
         spinBoxScale_1->setValue(0.000000000000000);
 
         gridLayout_4->addWidget(spinBoxScale_1, 1, 2, 1, 1);
-
-        label_4 = new QLabel(groupBox_2);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-
-        gridLayout_4->addWidget(label_4, 2, 1, 1, 1);
-
-        label_5 = new QLabel(groupBox_2);
-        label_5->setObjectName(QString::fromUtf8("label_5"));
-
-        gridLayout_4->addWidget(label_5, 0, 1, 1, 1);
 
         pushButtonScale = new QPushButton(groupBox_2);
         pushButtonScale->setObjectName(QString::fromUtf8("pushButtonScale"));
@@ -254,6 +220,34 @@ public:
         spinBoxRotate->setSingleStep(1.000000000000000);
 
         gridLayout_4->addWidget(spinBoxRotate, 0, 2, 1, 1);
+
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+
+        gridLayout_4->addWidget(label_3, 1, 1, 1, 1);
+
+        pushButtonShear = new QPushButton(groupBox_2);
+        pushButtonShear->setObjectName(QString::fromUtf8("pushButtonShear"));
+
+        gridLayout_4->addWidget(pushButtonShear, 3, 0, 1, 1);
+
+        spinBoxShear = new QDoubleSpinBox(groupBox_2);
+        spinBoxShear->setObjectName(QString::fromUtf8("spinBoxShear"));
+        spinBoxShear->setMinimum(-99.989999999999995);
+        spinBoxShear->setSingleStep(0.010000000000000);
+        spinBoxShear->setValue(0.000000000000000);
+
+        gridLayout_4->addWidget(spinBoxShear, 3, 2, 1, 1);
+
+        label_5 = new QLabel(groupBox_2);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+
+        gridLayout_4->addWidget(label_5, 0, 1, 1, 1);
+
+        label_4 = new QLabel(groupBox_2);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+
+        gridLayout_4->addWidget(label_4, 2, 1, 1, 1);
 
 
         gridLayout_2->addWidget(groupBox_2, 2, 0, 1, 1);
@@ -337,14 +331,13 @@ public:
 
         groupBox->setTitle(QCoreApplication::translate("ImageViewerClass", "Layers & Transformations", nullptr));
         groupBox_2->setTitle(QCoreApplication::translate("ImageViewerClass", "Transformations", nullptr));
-        label_6->setText(QCoreApplication::translate("ImageViewerClass", "factor", nullptr));
-        pushButtonSymetry->setText(QCoreApplication::translate("ImageViewerClass", "Symetry", nullptr));
         pushButtonRotate->setText(QCoreApplication::translate("ImageViewerClass", "Rotate", nullptr));
-        pushButtonShear->setText(QCoreApplication::translate("ImageViewerClass", "Shear", nullptr));
-        label_3->setText(QCoreApplication::translate("ImageViewerClass", "factor (x)", nullptr));
-        label_4->setText(QCoreApplication::translate("ImageViewerClass", "factor (y)", nullptr));
-        label_5->setText(QCoreApplication::translate("ImageViewerClass", "(deg)", nullptr));
+        label_6->setText(QCoreApplication::translate("ImageViewerClass", "factor", nullptr));
         pushButtonScale->setText(QCoreApplication::translate("ImageViewerClass", "Scale", nullptr));
+        label_3->setText(QCoreApplication::translate("ImageViewerClass", "factor (x)", nullptr));
+        pushButtonShear->setText(QCoreApplication::translate("ImageViewerClass", "Shear", nullptr));
+        label_5->setText(QCoreApplication::translate("ImageViewerClass", "(deg)", nullptr));
+        label_4->setText(QCoreApplication::translate("ImageViewerClass", "factor (y)", nullptr));
         pushButtonLayer->setText(QCoreApplication::translate("ImageViewerClass", "Choose Object ", nullptr));
         pushButtonColorPalette->setText(QCoreApplication::translate("ImageViewerClass", "Color Palette", nullptr));
         menuFile->setTitle(QCoreApplication::translate("ImageViewerClass", "File", nullptr));

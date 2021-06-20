@@ -41,7 +41,6 @@ private:
 	QVector<QPointF> points;
 
 	QVector<Object> objects;
-	int objectCount = 0;
 	int currentLayer = -1;
 
 	//ViewerWidget functions
@@ -107,5 +106,4 @@ private slots:
 	void on_pushButtonRotate_clicked(); 
 	void on_pushButtonScale_clicked(); 
 	void on_pushButtonShear_clicked(); 
-	void on_pushButtonSymetry_clicked();
 };

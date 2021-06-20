@@ -13,6 +13,12 @@ ImageViewer::ImageViewer(QWidget* parent)
 	openNewTabForImg(new ViewerWidget(name, QSize(width, height)));
 	ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
 
+	ui->pushButtonPolygone->setDisabled(true);
+	ui->pushButtonCircle->setDisabled(true);
+	ui->pushButtonBezier->setDisabled(true);
+	ui->pushButtonSquere->setDisabled(true);
+
+	ui->groupBox_2->setDisabled(true);
 }
 
 //ViewerWidget functions
@@ -86,7 +92,6 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 				//line
 				Object object = Object(points, 0, "line");
 				objects.append(object);
-				objectCount += 1;
 				w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 				drawingActive = false;
 				objectDrawn = true;
@@ -97,7 +102,6 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 				//Circle
 				Object object = Object(points, 0, "circle");
 				objects.append(object);
-				objectCount += 1;
 				w->drawCircle(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
 				drawingActive = false;
 				objectDrawn = true;
@@ -114,7 +118,6 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 			points = newPoints;
 			Object object = Object(points, 0, "square");
 			objects.append(object);
-			objectCount += 1;
 			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 			drawingActive = false;
 			objectDrawn = true;
@@ -125,7 +128,6 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 			//polygone
 			Object object = Object(points, 0, "polygone");
 			objects.append(object);
-			objectCount += 1;
 			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 			drawingActive = false;
 			objectDrawn = true;
@@ -136,7 +138,6 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 			//curve
 			Object object = Object(points, 0, "curve");
 			objects.append(object);
-			objectCount += 1;
 			w->drawBezierCurve(object.getPoints(), color);
 			drawingActive = false;
 			objectDrawn = true;
@@ -166,12 +167,14 @@ void ImageViewer::ViewerWidgetMouseButtonRelease(ViewerWidget* w, QEvent* event)
 }
 void ImageViewer::ViewerWidgetMouseMove(ViewerWidget* w, QEvent* event)
 {
-	if (currentLayer == -1)
+	Object currentObject = Object();
+	QVector<QPointF> points;
+
+	if (currentLayer != -1)
 	{
-		return;
+		currentObject = objects[currentLayer];
+		points = currentObject.getPoints();
 	}
-	Object currentObject = objects[currentLayer];
-	QVector<QPointF> points = currentObject.getPoints();
 
 	QMouseEvent* e = static_cast<QMouseEvent*>(event);
 	
@@ -423,30 +426,51 @@ void ImageViewer::on_pushButtonDraw_clicked()
 	objectDrawn = false;
 	points.clear();
 	//qDebug() << objectCount;
+
+	polygoneMode = false;
+	circleMode = false;
+	bezierCurveMode = false;
+	squereMode = false;
+
+	ui->pushButtonPolygone->setEnabled(true);
+	ui->pushButtonCircle->setEnabled(true);
+	ui->pushButtonBezier->setEnabled(true);
+	ui->pushButtonSquere->setEnabled(true);
+
+	ui->groupBox_2->setDisabled(true);
 }
 void ImageViewer::on_pushButtonPolygone_clicked()
 {
 	polygoneMode = true;
 	ui->pushButtonPolygone->setDisabled(true);
+	ui->pushButtonCircle->setDisabled(true);
+	ui->pushButtonBezier->setDisabled(true);
+	ui->pushButtonSquere->setDisabled(true);
 }
 void ImageViewer::on_pushButtonCircle_clicked()
 {
 	circleMode = true;
+	ui->pushButtonPolygone->setDisabled(true);
 	ui->pushButtonCircle->setDisabled(true);
-	ui->pushButtonSymetry->setDisabled(true);
+	ui->pushButtonBezier->setDisabled(true);
+	ui->pushButtonSquere->setDisabled(true);
 }
 void ImageViewer::on_pushButtonBezier_clicked()
 {
+	ui->pushButtonPolygone->setDisabled(true);
+	ui->pushButtonCircle->setDisabled(true);
 	ui->pushButtonBezier->setDisabled(true);
+	ui->pushButtonSquere->setDisabled(true);
 	bezierCurveMode = true;
-
-	ui->pushButtonSymetry->setDisabled(true);
 
 	msgBox.setText("Reminder: At least 2 points are required.");
 	msgBox.exec();
 }
 void ImageViewer::on_pushButtonSquere_clicked()
 {
+	ui->pushButtonPolygone->setDisabled(true);
+	ui->pushButtonCircle->setDisabled(true);
+	ui->pushButtonBezier->setDisabled(true);
 	ui->pushButtonSquere->setDisabled(true);
 	squereMode = true;
 
@@ -465,16 +489,11 @@ void ImageViewer::on_pushButtonClear_clicked()
 	drawingActive = false;
 	objectDrawn = false;
 
-	ui->pushButtonPolygone->setEnabled(true);
-	ui->pushButtonCircle->setEnabled(true);
-	ui->pushButtonBezier->setEnabled(true);
-	ui->pushButtonSquere->setEnabled(true);
-
-	ui->pushButtonSymetry->setEnabled(true);
-	ui->pushButtonClear->setEnabled(true);
-	ui->pushButtonDraw->setEnabled(true);
-
 	objects.clear();
+	currentLayer = -1;
+	points.clear();
+
+	ui->groupBox_2->setDisabled(true);
 }
 
 //Object layers
@@ -499,8 +518,10 @@ void ImageViewer::objectLayersAccepted()
 	{
 		msgBox.setText("Not Enough Objects.");
 		msgBox.exec();
+		currentLayer = -1;
 		return;
 	}
+	ui->groupBox_2->setEnabled(true);
 	updateImage();
 }
 void ImageViewer::updateImage()
@@ -645,33 +666,6 @@ void ImageViewer::on_pushButtonShear_clicked()
 	{
 		points[i] = QPoint(points[i].x() + factorX * points[i].y(), points[i].y());
 	}
-	currentObject.setPoints(points);
-	objects.replace(currentLayer, currentObject);
-	updateImage();
-}
-void ImageViewer::on_pushButtonSymetry_clicked()
-{
-	if (currentLayer == -1)
-	{
-		return;
-	}
-	Object currentObject = objects[currentLayer];
-	QVector<QPointF> points = currentObject.getPoints();
-	ViewerWidget* w = getCurrentViewerWidget();
-
-	QPoint vector = QPoint(points[1].x() - points[0].x(), points[1].y() - points[0].y());
-	QPoint normal = QPoint(vector.y(), -vector.x());
-
-	int a = normal.x(), b = normal.y();
-	int c = -a * points[0].x() - b * points[0].y();
-	double d = 0;
-
-	for (int i = 0; i < points.size(); i++)
-	{
-		d = (a * points[i].x() + b * points[i].y() + c) / (pow(a, 2) + pow(b, 2));
-		points[i] = QPoint(points[i].x() - 2 * a * d, points[i].y() - 2 * b * d);
-	}
-
 	currentObject.setPoints(points);
 	objects.replace(currentLayer, currentObject);
 	updateImage();
