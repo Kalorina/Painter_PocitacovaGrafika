@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>610</width>
-    <height>430</height>
+    <height>414</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,6 +22,9 @@
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QTableWidget" name="tableWidget"/>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxLayer"/>
       </item>
      </layout>
     </widget>

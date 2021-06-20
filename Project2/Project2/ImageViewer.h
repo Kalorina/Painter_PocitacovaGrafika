@@ -40,9 +40,9 @@ private:
 
 	QVector<QPointF> points;
 
-	Object currentObject = Object();
 	QVector<Object> objects;
 	int objectCount = 0;
+	int currentLayer = -1;
 
 	//ViewerWidget functions
 	ViewerWidget* getViewerWidget(int tabId);
@@ -100,6 +100,7 @@ private slots:
 	void on_pushButtonColorPalette_clicked();
 	void objectLayersAccepted();
 	void updateImage();
+	void drawObject(Object object);
 
 	//Transformations
 	void on_pushButtonClear_clicked();

@@ -86,18 +86,22 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 				//line
 				Object object = Object(points, 0, "line");
 				objects.append(object);
+				objectCount += 1;
 				w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 				drawingActive = false;
 				objectDrawn = true;
+				qDebug() << objects.size();
 			}
 			if (!polygoneMode && !bezierCurveMode && !squereMode && circleMode && points.size() == 2)
 			{
 				//Circle
 				Object object = Object(points, 0, "circle");
 				objects.append(object);
+				objectCount += 1;
 				w->drawCircle(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
 				drawingActive = false;
 				objectDrawn = true;
+				qDebug() << objects.size();
 			}
 		}
 		if (e->button() == Qt::RightButton && !polygoneMode && !bezierCurveMode && squereMode && points.size() == 2)
@@ -108,29 +112,35 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 			QVector<QPointF> newPoints;
 			newPoints.append(points[0]); newPoints.append(C); newPoints.append(points[1]); newPoints.append(D);
 			points = newPoints;
-			Object object = Object(points, 0, "squere");
+			Object object = Object(points, 0, "square");
 			objects.append(object);
+			objectCount += 1;
 			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 			drawingActive = false;
 			objectDrawn = true;
+			qDebug() << objects.size();
 		}
 		if (e->button() == Qt::RightButton && polygoneMode && !squereMode && !bezierCurveMode)
 		{
 			//polygone
 			Object object = Object(points, 0, "polygone");
 			objects.append(object);
+			objectCount += 1;
 			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 			drawingActive = false;
 			objectDrawn = true;
+			qDebug() << objects.size();
 		}
 		if (e->button() == Qt::RightButton && !polygoneMode && !squereMode && bezierCurveMode)
 		{
 			//curve
 			Object object = Object(points, 0, "curve");
 			objects.append(object);
+			objectCount += 1;
 			w->drawBezierCurve(object.getPoints(), color);
 			drawingActive = false;
 			objectDrawn = true;
+			qDebug() << objects.size();
 		}
 	}
 	else
@@ -156,11 +166,13 @@ void ImageViewer::ViewerWidgetMouseButtonRelease(ViewerWidget* w, QEvent* event)
 }
 void ImageViewer::ViewerWidgetMouseMove(ViewerWidget* w, QEvent* event)
 {
-	QVector<QPointF> points = currentObject.getPoints();
-	if (currentObject.getPoints().size() == 0)
+	if (currentLayer == -1)
 	{
 		return;
 	}
+	Object currentObject = objects[currentLayer];
+	QVector<QPointF> points = currentObject.getPoints();
+
 	QMouseEvent* e = static_cast<QMouseEvent*>(event);
 	
 	QPointF vector = QPointF(0, 0);
@@ -176,21 +188,11 @@ void ImageViewer::ViewerWidgetMouseMove(ViewerWidget* w, QEvent* event)
 			points[i] = QPoint(points[i].x() + vector.x(), points[i].y() + vector.y());
 
 		}
+		lastMovePoint = e->pos();
 
 		currentObject.setPoints(points);
-		if (circleMode)
-		{
-			w->drawCircle(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
-		}
-		else if (bezierCurveMode)
-		{
-			w->drawBezierCurve(currentObject.getPoints(), color);
-		}
-		else
-		{
-			w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
-		}
-		lastMovePoint = e->pos();
+		objects.replace(currentLayer, currentObject);
+		updateImage();
 	}
 }
 void ImageViewer::ViewerWidgetLeave(ViewerWidget* w, QEvent* event)
@@ -201,11 +203,13 @@ void ImageViewer::ViewerWidgetEnter(ViewerWidget* w, QEvent* event)
 }
 void ImageViewer::ViewerWidgetWheel(ViewerWidget* w, QEvent* event)
 {
-	QVector<QPointF> points = currentObject.getPoints();
-	if (currentObject.getPoints().size() == 0)
+	if (currentLayer == -1)
 	{
 		return;
 	}
+
+	Object currentObject = objects[currentLayer];
+	QVector<QPointF> points = currentObject.getPoints();
 
 	QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
 
@@ -231,20 +235,10 @@ void ImageViewer::ViewerWidgetWheel(ViewerWidget* w, QEvent* event)
 
 		}
 	}
-	currentObject.setPoints(points);
 
-	if (circleMode)
-	{
-		w->drawCircle(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
-	}
-	else if (bezierCurveMode)
-	{
-		w->drawBezierCurve(currentObject.getPoints(), color);
-	}
-	else
-	{
-		w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
-	}
+	currentObject.setPoints(points);
+	objects.replace(currentLayer, currentObject);
+	updateImage();
 }
 
 //ImageViewer Events
@@ -426,7 +420,9 @@ void ImageViewer::on_actionSet_background_color_triggered()
 void ImageViewer::on_pushButtonDraw_clicked()
 {
 	drawingActive = true;
-	objectCount += 1;
+	objectDrawn = false;
+	points.clear();
+	//qDebug() << objectCount;
 }
 void ImageViewer::on_pushButtonPolygone_clicked()
 {
@@ -498,63 +494,88 @@ void ImageViewer::on_pushButtonColorPalette_clicked()
 }
 void ImageViewer::objectLayersAccepted()
 {
+	currentLayer = objectLayers->getLayer();
+	if (objects.size() < currentLayer)
+	{
+		msgBox.setText("Not Enough Objects.");
+		msgBox.exec();
+		return;
+	}
 	updateImage();
 }
 void ImageViewer::updateImage()
 {
-	currentObject = objects[0];
-	//clearImage();
+	clearImage();
 
+	for (int i = 0; i < objects.size(); i++)
+	{
+		drawObject(objects[i]);
+	}
+}
+void ImageViewer::drawObject(Object object)
+{
 	ViewerWidget* w = getCurrentViewerWidget();
-	if (!polygoneMode && !circleMode && !bezierCurveMode && !squereMode && currentObject.getPoints().size() == 2)
+	/*if (!polygoneMode && !circleMode && !bezierCurveMode && !squereMode && current.getPoints().size() == 2)
 	{
 		//line
-		w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
+		w->draw(current.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 	}
-	if (!polygoneMode && !bezierCurveMode && !squereMode && circleMode && points.size() == 2)
+	if (!polygoneMode && !bezierCurveMode && !squereMode && circleMode && current.getPoints().size() == 2)
 	{
 		//Circle
-		w->drawCircle(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
+		w->drawCircle(current.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
 		drawingActive = false;
 		objectDrawn = true;
 	}
 	if (!polygoneMode && !bezierCurveMode && squereMode && points.size() == 2)
 	{
 		//squere
-		w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
+		w->draw(current.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 		drawingActive = false;
 		objectDrawn = true;
 	}
 	if (polygoneMode && !squereMode && !bezierCurveMode)
 	{
 		//polygone
-		w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
+		w->draw(current.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 		drawingActive = false;
 		objectDrawn = true;
 	}
 	if (!polygoneMode && !squereMode && bezierCurveMode)
 	{
 		//curve
-		w->drawBezierCurve(currentObject.getPoints(), color);
+		w->drawBezierCurve(current.getPoints(), color);
 		drawingActive = false;
 		objectDrawn = true;
+	}*/
+	if (object.getType() == "circle")
+	{
+		w->drawCircle(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
+	}
+	else if (object.getType() == "curve")
+	{
+		w->drawBezierCurve(object.getPoints(), color);
+	}
+	else
+	{
+		w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 	}
 }
+
 
 //Transformations
 void ImageViewer::on_pushButtonRotate_clicked()
 {
-	QVector<QPointF> points = currentObject.getPoints();
-	if (currentObject.getPoints().size() == 0)
+	if (currentLayer == -1)
 	{
 		return;
 	}
+	Object currentObject = objects[currentLayer];
+	QVector<QPointF> points = currentObject.getPoints();
 	ViewerWidget* w = getCurrentViewerWidget();
 	double degree = ui->spinBoxRotate->value();
 	QPoint zero = QPoint(points[0].x(), points[0].y());
 	int a, b;
-
-	clearImage();
 
 	if (degree >= 0)
 	{
@@ -579,33 +600,22 @@ void ImageViewer::on_pushButtonRotate_clicked()
 
 	//qDebug() << points;
 	currentObject.setPoints(points);
+	objects.replace(currentLayer, currentObject);
+	updateImage();
 
-	if (circleMode)
-	{
-		w->drawCircle(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
-	}
-	else if (bezierCurveMode)
-	{
-		w->drawBezierCurve(currentObject.getPoints(), color);
-	}
-	else
-	{
-		w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
-	}
 }
 void ImageViewer::on_pushButtonScale_clicked()
 {
-	QVector<QPointF> points = currentObject.getPoints();
-	if (currentObject.getPoints().size() == 0)
+	if (currentLayer == -1)
 	{
 		return;
 	}
+	Object currentObject = objects[currentLayer];
+	QVector<QPointF> points = currentObject.getPoints();
 	ViewerWidget* w = getCurrentViewerWidget();
 
 	double factorX = ui->spinBoxScale_1->value();
 	double factorY = ui->spinBoxScale_2->value();
-
-	clearImage();
 
 	if (factorX != 0 && factorY != 0)
 	{
@@ -616,59 +626,37 @@ void ImageViewer::on_pushButtonScale_clicked()
 		}
 	}
 	currentObject.setPoints(points);
-
-	if (circleMode)
-	{
-		w->drawCircle(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
-	}
-	else if (bezierCurveMode)
-	{
-		w->drawBezierCurve(currentObject.getPoints(), color);
-	}
-	else
-	{
-		w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
-	}
+	objects.replace(currentLayer, currentObject);
+	updateImage();
 }
 void ImageViewer::on_pushButtonShear_clicked()
 {
-	QVector<QPointF> points = currentObject.getPoints();
-	if (currentObject.getPoints().size() == 0)
+	if (currentLayer == -1)
 	{
 		return;
 	}
+	Object currentObject = objects[currentLayer];
+	QVector<QPointF> points = currentObject.getPoints();
 	ViewerWidget* w = getCurrentViewerWidget();
 
 	double factorX = ui->spinBoxShear->value();
-
-	clearImage();
 
 	for (int i = 0; i < points.size() - 1; i++)
 	{
 		points[i] = QPoint(points[i].x() + factorX * points[i].y(), points[i].y());
 	}
 	currentObject.setPoints(points);
-
-	if (circleMode)
-	{
-		w->drawCircle(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
-	}
-	else if (bezierCurveMode)
-	{
-		w->drawBezierCurve(currentObject.getPoints(), color);
-	}
-	else
-	{
-		w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
-	}
+	objects.replace(currentLayer, currentObject);
+	updateImage();
 }
 void ImageViewer::on_pushButtonSymetry_clicked()
 {
-	QVector<QPointF> points = currentObject.getPoints();
-	if (currentObject.getPoints().size() == 0)
+	if (currentLayer == -1)
 	{
 		return;
 	}
+	Object currentObject = objects[currentLayer];
+	QVector<QPointF> points = currentObject.getPoints();
 	ViewerWidget* w = getCurrentViewerWidget();
 
 	QPoint vector = QPoint(points[1].x() - points[0].x(), points[1].y() - points[0].y());
@@ -678,25 +666,13 @@ void ImageViewer::on_pushButtonSymetry_clicked()
 	int c = -a * points[0].x() - b * points[0].y();
 	double d = 0;
 
-	clearImage();
-
 	for (int i = 0; i < points.size(); i++)
 	{
 		d = (a * points[i].x() + b * points[i].y() + c) / (pow(a, 2) + pow(b, 2));
 		points[i] = QPoint(points[i].x() - 2 * a * d, points[i].y() - 2 * b * d);
 	}
-	currentObject.setPoints(points);
 
-	if (circleMode)
-	{
-		w->drawCircle(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
-	}
-	else if (bezierCurveMode)
-	{
-		w->drawBezierCurve(currentObject.getPoints(), color);
-	}
-	else
-	{
-		w->draw(currentObject.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
-	}
+	currentObject.setPoints(points);
+	objects.replace(currentLayer, currentObject);
+	updateImage();
 }

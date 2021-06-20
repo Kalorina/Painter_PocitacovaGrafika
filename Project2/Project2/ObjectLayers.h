@@ -12,7 +12,9 @@ public:
 	ObjectLayers(QWidget* parent = Q_NULLPTR) : QDialog(parent), layersUi(new Ui::Dialog)
 	{
 		layersUi->setupUi(this);
-	};
+	}
+
+	int getLayer() { return layersUi->spinBoxLayer->value(); }
 
 private:
 	Ui::Dialog* layersUi;

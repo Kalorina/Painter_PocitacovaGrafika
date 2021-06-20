@@ -17,6 +17,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
 
@@ -29,6 +30,7 @@ public:
     QGroupBox *loginGroupBox;
     QVBoxLayout *verticalLayout_2;
     QTableWidget *tableWidget;
+    QSpinBox *spinBoxLayer;
     QGroupBox *bottonGroupBox;
     QHBoxLayout *horizontalLayout_2;
     QSpacerItem *horizontalSpacer_2;
@@ -39,7 +41,7 @@ public:
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
-        Dialog->resize(610, 430);
+        Dialog->resize(610, 414);
         verticalLayout_3 = new QVBoxLayout(Dialog);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         loginGroupBox = new QGroupBox(Dialog);
@@ -50,6 +52,11 @@ public:
         tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
 
         verticalLayout_2->addWidget(tableWidget);
+
+        spinBoxLayer = new QSpinBox(loginGroupBox);
+        spinBoxLayer->setObjectName(QString::fromUtf8("spinBoxLayer"));
+
+        verticalLayout_2->addWidget(spinBoxLayer);
 
 
         verticalLayout_3->addWidget(loginGroupBox);
