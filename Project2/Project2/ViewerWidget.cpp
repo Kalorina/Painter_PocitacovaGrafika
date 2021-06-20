@@ -914,7 +914,7 @@ void ViewerWidget::drawBezierCurve(QVector<QPointF> points, QColor color)
 		QPointF q0, q1, p;
 		QPointF a, b; double qx, qy, px, py;
 
-		qDebug() << points;
+		//qDebug() << points;
 
 		for (int i = 0; i < n; i++)
 		{
