@@ -44,6 +44,8 @@ private:
 	int objectCount = 0;
 	int currentLayer = -1;
 
+	QVector<QString> data;
+
 	//ViewerWidget functions
 	ViewerWidget* getViewerWidget(int tabId);
 	ViewerWidget* getCurrentViewerWidget();
@@ -85,10 +87,16 @@ private slots:
 	void newImageAccepted();
 	void on_actionOpen_triggered();
 	void on_actionSave_as_triggered();
+	void on_actionSave_Program_State_triggered();
+	void on_actionOpen_Program_State_triggered();
 	void on_actionClear_triggered();
 	void on_actionSet_background_color_triggered();
 
-	//Set Up
+	//+++Program State
+
+	void loadObjects();
+
+	//Drawing
 	void on_pushButtonPolygone_clicked();
 	void on_pushButtonCircle_clicked();
 	void on_pushButtonBezier_clicked();

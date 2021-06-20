@@ -21,6 +21,7 @@ public:
 	QColor getColor() { return color; }
 	int getZbuffer() { return zBuffer; }
 	QString getType() { return type; }
+	int getNumberOfPoints() { return points.size(); }
 
 	void print() {
 		qDebug() << "Points: " << points;

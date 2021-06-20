@@ -40,6 +40,8 @@ public:
     QAction *actionRename;
     QAction *actionClear;
     QAction *actionSet_background_color;
+    QAction *actionSave_Program_State;
+    QAction *actionOpen_Program_State;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QGroupBox *groupBoxSetUp;
@@ -99,6 +101,10 @@ public:
         actionClear->setObjectName(QString::fromUtf8("actionClear"));
         actionSet_background_color = new QAction(ImageViewerClass);
         actionSet_background_color->setObjectName(QString::fromUtf8("actionSet_background_color"));
+        actionSave_Program_State = new QAction(ImageViewerClass);
+        actionSave_Program_State->setObjectName(QString::fromUtf8("actionSave_Program_State"));
+        actionOpen_Program_State = new QAction(ImageViewerClass);
+        actionOpen_Program_State->setObjectName(QString::fromUtf8("actionOpen_Program_State"));
         centralWidget = new QWidget(ImageViewerClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -313,6 +319,9 @@ public:
         menuFile->addAction(actionNew);
         menuFile->addAction(actionOpen);
         menuFile->addAction(actionSave_as);
+        menuFile->addSeparator();
+        menuFile->addAction(actionSave_Program_State);
+        menuFile->addAction(actionOpen_Program_State);
         menuImage->addAction(actionRename);
         menuImage->addAction(actionClear);
         menuImage->addAction(actionSet_background_color);
@@ -331,6 +340,8 @@ public:
         actionRename->setText(QCoreApplication::translate("ImageViewerClass", "Rename", nullptr));
         actionClear->setText(QCoreApplication::translate("ImageViewerClass", "Clear", nullptr));
         actionSet_background_color->setText(QCoreApplication::translate("ImageViewerClass", "Set background color", nullptr));
+        actionSave_Program_State->setText(QCoreApplication::translate("ImageViewerClass", "Save Program State", nullptr));
+        actionOpen_Program_State->setText(QCoreApplication::translate("ImageViewerClass", "Open Program State", nullptr));
         groupBoxSetUp->setTitle(QCoreApplication::translate("ImageViewerClass", "Set Up", nullptr));
         pushButtonDraw->setText(QCoreApplication::translate("ImageViewerClass", "Draw Object", nullptr));
         pushButtonClear->setText(QCoreApplication::translate("ImageViewerClass", "Clear", nullptr));

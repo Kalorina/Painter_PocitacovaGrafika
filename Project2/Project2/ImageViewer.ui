@@ -301,6 +301,9 @@
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave_as"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_Program_State"/>
+    <addaction name="actionOpen_Program_State"/>
    </widget>
    <widget class="QMenu" name="menuImage">
     <property name="title">
@@ -350,6 +353,16 @@
   <action name="actionSet_background_color">
    <property name="text">
     <string>Set background color</string>
+   </property>
+  </action>
+  <action name="actionSave_Program_State">
+   <property name="text">
+    <string>Save Program State</string>
+   </property>
+  </action>
+  <action name="actionOpen_Program_State">
+   <property name="text">
+    <string>Open Program State</string>
    </property>
   </action>
  </widget>

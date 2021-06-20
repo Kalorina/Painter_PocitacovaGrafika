@@ -5,7 +5,7 @@ ImageViewer::ImageViewer(QWidget* parent)
 {
 	ui->setupUi(this);
 
-	ui->menuBar->setDisabled(true);
+	//ui->menuBar->setDisabled(true);
 
 	int width = 500;
 	int height = 500;
@@ -400,6 +400,76 @@ void ImageViewer::on_actionSave_as_triggered()
 		msgBox.exec();
 	}
 }
+void ImageViewer::on_actionSave_Program_State_triggered()
+{
+	QString fileName = "ProgramState.txt";
+
+	QFile File(fileName);
+
+	if (File.open(QIODevice::WriteOnly)) {
+		QTextStream out(&File);
+
+		out << objects.size() << "\n";
+
+		for (int i = 0; i < objects.size(); i++)
+		{
+			out << objects[i].getType() << "\n";
+			out << objects[i].getColor().red() << "," << objects[i].getColor().green() << "," << objects[i].getColor().blue() "\n";
+			out << objects[i].getZbuffer() << "\n";
+			out << objects[i].getNumberOfPoints() << "\n";
+			for (int j = 0; j < objects[i].getPoints().size(); j++)
+			{
+				out << objects[i].getPoints()[j].x() << "," << objects[i].getPoints()[j].y() << "\n";
+			}
+		}
+
+		File.close();
+
+		qDebug() << "data loaded.";
+	}
+	else {
+		qDebug() << "file did not open.";
+		qDebug() << File.errorString();
+		return;
+	}
+}
+void ImageViewer::on_actionOpen_Program_State_triggered()
+{
+	qDebug() << "Loading Program State";
+
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), "", tr("txt Files (*.txt);;All files (*.)"));
+
+	if (fileName.isEmpty()) {
+		qDebug() << "file is empty";
+		return;
+	}
+
+	QFileInfo Finfo(fileName);
+
+	if (Finfo.suffix() == "txt") {
+
+		QFile file(fileName);
+		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+			return;
+
+		QTextStream in(&file);
+		while (!in.atEnd()) {
+			QString line = in.readLine();
+			data.push_back(line);
+		}
+
+		file.close();
+	}
+
+	if (!data.isEmpty())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Data did load.");
+		msgBox.exec();
+	}
+
+	loadObjects();
+}
 void ImageViewer::on_actionClear_triggered()
 {
 	if (!isImgOpened()) {
@@ -436,6 +506,138 @@ void ImageViewer::on_pushButtonDraw_clicked()
 	ui->pushButtonSquere->setEnabled(true);
 
 	ui->groupBox_2->setDisabled(true);
+}
+void ImageViewer::loadObjects()
+{
+	objects.clear();
+	QString number = data[0];
+	int numberOfObjects = number.toInt();
+	qDebug() << numberOfObjects;
+
+	for (int i = 1; i < data.size()+1; i++)
+	{
+		QString type = data[i];
+		if (type == "line")
+		{
+			Object object;
+			object.setType(type);
+			QString stringColor = data[1 + i].toInt();
+			QStringList list = stringColor.split(QLatin1Char(','));
+			QColor color;
+			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
+			object.setColor(color);
+			object.setZbuffer(data[i + 2].toInt());
+			QVector<QPointF> points;
+			for (int j = 0; j < 2; j++)
+			{
+				QString pointS = data[5 + j].toInt();
+				QStringList list = pointS.split(QLatin1Char(','));
+				// list1: [ "x", "y"]
+				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				points.append(point);
+			}
+			object.setPoints(points);
+			objects.append(object);
+		}
+		if (type == "circle")
+		{
+			Object object;
+			object.setType(type);
+			QString stringColor = data[1 + i].toInt();
+			QStringList list = stringColor.split(QLatin1Char(','));
+			QColor color;
+			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
+			object.setColor(color);
+			object.setZbuffer(data[i + 2].toInt());
+			QVector<QPointF> points;
+			for (int j = 0; j < 2; j++)
+			{
+				QString pointS = data[5 + j].toInt();
+				QStringList list = pointS.split(QLatin1Char(','));
+				// list1: [ "x", "y"]
+				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				points.append(point);
+			}
+			object.setPoints(points);
+			objects.append(object);
+		}
+		if (type == "square")
+		{
+			Object object;
+			object.setType(type);
+			QString stringColor = data[1 + i].toInt();
+			QStringList list = stringColor.split(QLatin1Char(','));
+			QColor color;
+			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
+			object.setColor(color);
+			object.setZbuffer(data[i + 2].toInt());
+			QVector<QPointF> points;
+			for (int j = 0; j < 4; j++)
+			{
+				QString pointS = data[5 + j].toInt();
+				QStringList list = pointS.split(QLatin1Char(','));
+				// list1: [ "x", "y"]
+				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				points.append(point);
+			}
+			object.setPoints(points);
+			objects.append(object);
+		}
+		if (type == "polynome")
+		{
+			Object object;
+			object.setType(type);
+			QString stringColor = data[1 + i].toInt();
+			QStringList list = stringColor.split(QLatin1Char(','));
+			QColor color;
+			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
+			object.setColor(color);
+			object.setZbuffer(data[i + 2].toInt());
+			int numberOfPoints = data[i + 3].toInt();
+			QVector<QPointF> points;
+			for (int j = 0; j < numberOfPoints; j++)
+			{
+				QString pointS = data[5 + j].toInt();
+				QStringList list = pointS.split(QLatin1Char(','));
+				// list1: [ "x", "y"]
+				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				points.append(point);
+			}
+			object.setPoints(points);
+			objects.append(object);
+		}
+		if (type == "curve")
+		{
+			Object object;
+			object.setType(type);
+			QString stringColor = data[1 + i].toInt();
+			QStringList list = stringColor.split(QLatin1Char(','));
+			QColor color;
+			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
+			object.setColor(color);
+			object.setZbuffer(data[i + 2].toInt());
+			int numberOfPoints = data[i + 3].toInt();
+			QVector<QPointF> points;
+			for (int j = 0; j < numberOfPoints; j++)
+			{
+				QString pointS = data[5 + j].toInt();
+				QStringList list = pointS.split(QLatin1Char(','));
+				// list: [ "x", "y"]
+				qDebug() << list;
+				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				points.append(point);
+			}
+			object.setPoints(points);
+			objects.append(object);
+		}
+	}
+
+	qDebug() << objects.size();
+
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i].print();
+	}
 }
 void ImageViewer::on_pushButtonPolygone_clicked()
 {
