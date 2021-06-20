@@ -41,6 +41,7 @@ private:
 	QVector<QPointF> points;
 
 	QVector<Object> objects;
+	int objectCount = 0;
 	int currentLayer = -1;
 
 	//ViewerWidget functions

@@ -18,4 +18,6 @@ public:
 
 private:
 	Ui::Dialog* layersUi;
+
+	QColor color;
 };

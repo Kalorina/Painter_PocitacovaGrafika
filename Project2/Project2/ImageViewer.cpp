@@ -167,14 +167,13 @@ void ImageViewer::ViewerWidgetMouseButtonRelease(ViewerWidget* w, QEvent* event)
 }
 void ImageViewer::ViewerWidgetMouseMove(ViewerWidget* w, QEvent* event)
 {
-	Object currentObject = Object();
-	QVector<QPointF> points;
-
-	if (currentLayer != -1)
+	if (currentLayer == -1)
 	{
-		currentObject = objects[currentLayer];
-		points = currentObject.getPoints();
+		return;
 	}
+
+	Object currentObject = objects[currentLayer];
+	QVector<QPointF> points = currentObject.getPoints();
 
 	QMouseEvent* e = static_cast<QMouseEvent*>(event);
 	
@@ -582,7 +581,6 @@ void ImageViewer::drawObject(Object object)
 		w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 	}
 }
-
 
 //Transformations
 void ImageViewer::on_pushButtonRotate_clicked()
