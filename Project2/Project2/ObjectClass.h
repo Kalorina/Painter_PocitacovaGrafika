@@ -8,7 +8,7 @@ private:
 	QString type; //polygone;circle;triangle;curve;line;
 
 public:
-	Object() { zBuffer = 0; type = ""; }
+	Object() { points.resize(0); zBuffer = 0; type = ""; }
 	Object(QVector<QPointF> p, int z, QString t) { points = p; zBuffer = z; type = t; }
 
 	void setPoints(QVector<QPointF> p) { points = p; }

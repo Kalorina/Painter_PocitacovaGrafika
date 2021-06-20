@@ -157,6 +157,10 @@ void ImageViewer::ViewerWidgetMouseButtonRelease(ViewerWidget* w, QEvent* event)
 void ImageViewer::ViewerWidgetMouseMove(ViewerWidget* w, QEvent* event)
 {
 	QVector<QPointF> points = currentObject.getPoints();
+	if (currentObject.getPoints().size() == 0)
+	{
+		return;
+	}
 	QMouseEvent* e = static_cast<QMouseEvent*>(event);
 	
 	QPointF vector = QPointF(0, 0);
@@ -197,13 +201,18 @@ void ImageViewer::ViewerWidgetEnter(ViewerWidget* w, QEvent* event)
 }
 void ImageViewer::ViewerWidgetWheel(ViewerWidget* w, QEvent* event)
 {
+	QVector<QPointF> points = currentObject.getPoints();
+	if (currentObject.getPoints().size() == 0)
+	{
+		return;
+	}
+
 	QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
 
 	double factorDown = 0.75;
 	double factorUp = 1.25;
 
 	clearImage();
-	QVector<QPointF> points = currentObject.getPoints();
 
 	if (wheelEvent->angleDelta().y() > 0)
 	{
@@ -536,6 +545,10 @@ void ImageViewer::updateImage()
 void ImageViewer::on_pushButtonRotate_clicked()
 {
 	QVector<QPointF> points = currentObject.getPoints();
+	if (currentObject.getPoints().size() == 0)
+	{
+		return;
+	}
 	ViewerWidget* w = getCurrentViewerWidget();
 	double degree = ui->spinBoxRotate->value();
 	QPoint zero = QPoint(points[0].x(), points[0].y());
@@ -583,6 +596,10 @@ void ImageViewer::on_pushButtonRotate_clicked()
 void ImageViewer::on_pushButtonScale_clicked()
 {
 	QVector<QPointF> points = currentObject.getPoints();
+	if (currentObject.getPoints().size() == 0)
+	{
+		return;
+	}
 	ViewerWidget* w = getCurrentViewerWidget();
 
 	double factorX = ui->spinBoxScale_1->value();
@@ -616,6 +633,10 @@ void ImageViewer::on_pushButtonScale_clicked()
 void ImageViewer::on_pushButtonShear_clicked()
 {
 	QVector<QPointF> points = currentObject.getPoints();
+	if (currentObject.getPoints().size() == 0)
+	{
+		return;
+	}
 	ViewerWidget* w = getCurrentViewerWidget();
 
 	double factorX = ui->spinBoxShear->value();
@@ -644,6 +665,10 @@ void ImageViewer::on_pushButtonShear_clicked()
 void ImageViewer::on_pushButtonSymetry_clicked()
 {
 	QVector<QPointF> points = currentObject.getPoints();
+	if (currentObject.getPoints().size() == 0)
+	{
+		return;
+	}
 	ViewerWidget* w = getCurrentViewerWidget();
 
 	QPoint vector = QPoint(points[1].x() - points[0].x(), points[1].y() - points[0].y());
