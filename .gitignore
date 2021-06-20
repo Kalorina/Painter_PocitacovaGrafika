@@ -50,3 +50,5 @@ Project2/Project2/x64/Release/qmake/qtvars_x64_Release.props
 Project2/x64/Debug/Project2.exe
 Project2/x64/Debug/Project2.ilk
 Project2/x64/Debug/Project2.pdb
+Project2/.vs/Project2/v16/ipch/AutoPCH/a36f22eb7f9be3e3/IMAGEVIEWER.ipch
+Project2/Project2/x64/Debug/Project2.tlog/CL.write.1.tlog
