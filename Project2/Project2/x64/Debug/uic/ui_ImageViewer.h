@@ -71,11 +71,14 @@ public:
     QLabel *label_3;
     QPushButton *pushButtonShear;
     QDoubleSpinBox *spinBoxShear;
+    QPushButton *pushButtonColorLayer;
     QLabel *label_5;
     QLabel *label_4;
     QPushButton *pushButtonChangeLayer;
     QLabel *label_7;
     QSpinBox *spinBoxNewLayer;
+    QLabel *label_8;
+    QSpinBox *spinBoxLayerColor;
     QPushButton *pushButtonColorPalette;
     QPushButton *pushButtonLayer;
     QTabWidget *tabWidget;
@@ -255,6 +258,11 @@ public:
 
         gridLayout_4->addWidget(spinBoxShear, 3, 2, 1, 1);
 
+        pushButtonColorLayer = new QPushButton(groupBox_2);
+        pushButtonColorLayer->setObjectName(QString::fromUtf8("pushButtonColorLayer"));
+
+        gridLayout_4->addWidget(pushButtonColorLayer, 6, 0, 1, 1);
+
         label_5 = new QLabel(groupBox_2);
         label_5->setObjectName(QString::fromUtf8("label_5"));
 
@@ -268,17 +276,29 @@ public:
         pushButtonChangeLayer = new QPushButton(groupBox_2);
         pushButtonChangeLayer->setObjectName(QString::fromUtf8("pushButtonChangeLayer"));
 
-        gridLayout_4->addWidget(pushButtonChangeLayer, 4, 2, 1, 1);
+        gridLayout_4->addWidget(pushButtonChangeLayer, 4, 0, 1, 1);
 
         label_7 = new QLabel(groupBox_2);
         label_7->setObjectName(QString::fromUtf8("label_7"));
 
-        gridLayout_4->addWidget(label_7, 4, 0, 1, 1);
+        gridLayout_4->addWidget(label_7, 4, 1, 1, 1);
 
         spinBoxNewLayer = new QSpinBox(groupBox_2);
         spinBoxNewLayer->setObjectName(QString::fromUtf8("spinBoxNewLayer"));
+        spinBoxNewLayer->setMinimum(1);
 
-        gridLayout_4->addWidget(spinBoxNewLayer, 4, 1, 1, 1);
+        gridLayout_4->addWidget(spinBoxNewLayer, 4, 2, 1, 1);
+
+        label_8 = new QLabel(groupBox_2);
+        label_8->setObjectName(QString::fromUtf8("label_8"));
+
+        gridLayout_4->addWidget(label_8, 6, 1, 1, 1);
+
+        spinBoxLayerColor = new QSpinBox(groupBox_2);
+        spinBoxLayerColor->setObjectName(QString::fromUtf8("spinBoxLayerColor"));
+        spinBoxLayerColor->setMinimum(1);
+
+        gridLayout_4->addWidget(spinBoxLayerColor, 6, 2, 1, 1);
 
 
         gridLayout_2->addWidget(groupBox_2, 3, 0, 1, 1);
@@ -373,10 +393,12 @@ public:
         pushButtonScale->setText(QCoreApplication::translate("ImageViewerClass", "Scale", nullptr));
         label_3->setText(QCoreApplication::translate("ImageViewerClass", "factor (x)", nullptr));
         pushButtonShear->setText(QCoreApplication::translate("ImageViewerClass", "Shear", nullptr));
+        pushButtonColorLayer->setText(QCoreApplication::translate("ImageViewerClass", "Change Color ", nullptr));
         label_5->setText(QCoreApplication::translate("ImageViewerClass", "(deg)", nullptr));
         label_4->setText(QCoreApplication::translate("ImageViewerClass", "factor (y)", nullptr));
         pushButtonChangeLayer->setText(QCoreApplication::translate("ImageViewerClass", "Change Layer", nullptr));
-        label_7->setText(QCoreApplication::translate("ImageViewerClass", "Change Current Layer to", nullptr));
+        label_7->setText(QCoreApplication::translate("ImageViewerClass", "to layer", nullptr));
+        label_8->setText(QCoreApplication::translate("ImageViewerClass", "in layer", nullptr));
         pushButtonColorPalette->setText(QCoreApplication::translate("ImageViewerClass", "Color Palette", nullptr));
         pushButtonLayer->setText(QCoreApplication::translate("ImageViewerClass", "Objects ", nullptr));
         menuFile->setTitle(QCoreApplication::translate("ImageViewerClass", "File", nullptr));

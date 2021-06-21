@@ -106,6 +106,7 @@ private slots:
 
 	//ObjectLayers
 	void on_pushButtonLayer_clicked();
+	void on_pushButtonColorLayer_clicked();
 	void on_pushButtonColorPalette_clicked();
 	void objectLayersAccepted();
 	void updateImage();

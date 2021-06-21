@@ -21,7 +21,11 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="0" colspan="2">
-       <widget class="QSpinBox" name="spinBoxLayer"/>
+       <widget class="QSpinBox" name="spinBoxLayer">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+       </widget>
       </item>
       <item row="0" column="0" colspan="2">
        <widget class="QTableWidget" name="tableWidget"/>

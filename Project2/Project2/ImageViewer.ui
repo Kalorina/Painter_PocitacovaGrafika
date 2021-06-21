@@ -226,6 +226,13 @@
             </property>
            </widget>
           </item>
+          <item row="6" column="0">
+           <widget class="QPushButton" name="pushButtonColorLayer">
+            <property name="text">
+             <string>Change Color </string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="label_5">
             <property name="text">
@@ -240,22 +247,40 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
+          <item row="4" column="0">
            <widget class="QPushButton" name="pushButtonChangeLayer">
             <property name="text">
              <string>Change Layer</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="4" column="1">
            <widget class="QLabel" name="label_7">
             <property name="text">
-             <string>Change Current Layer to</string>
+             <string>to layer</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QSpinBox" name="spinBoxNewLayer"/>
+          <item row="4" column="2">
+           <widget class="QSpinBox" name="spinBoxNewLayer">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>in layer</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <widget class="QSpinBox" name="spinBoxLayerColor">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

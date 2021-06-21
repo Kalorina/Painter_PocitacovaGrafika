@@ -51,6 +51,7 @@ public:
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         spinBoxLayer = new QSpinBox(loginGroupBox);
         spinBoxLayer->setObjectName(QString::fromUtf8("spinBoxLayer"));
+        spinBoxLayer->setMinimum(1);
 
         gridLayout->addWidget(spinBoxLayer, 1, 0, 1, 2);
 
