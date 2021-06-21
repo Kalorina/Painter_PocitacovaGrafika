@@ -19,8 +19,15 @@
      <property name="title">
       <string/>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0" colspan="2">
+     <layout class="QFormLayout" name="formLayout">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Layer to Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
        <widget class="QSpinBox" name="spinBoxLayer">
         <property name="minimum">
          <number>1</number>
