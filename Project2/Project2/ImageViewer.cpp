@@ -466,6 +466,7 @@ void ImageViewer::on_actionOpen_Program_State_triggered()
 	}
 
 	loadObjects();
+	updateImage();
 }
 void ImageViewer::on_actionClear_triggered()
 {
@@ -724,7 +725,7 @@ void ImageViewer::on_pushButtonColorLayer_clicked()
 {
 	int layer = ui->spinBoxLayerColor->value();
 	qDebug() << layer;
-	/*currentLayer = layer;
+	currentLayer = layer;
 	if (objects.size() < currentLayer)
 	{
 		msgBox.setText("Wrong layer.");
@@ -732,7 +733,8 @@ void ImageViewer::on_pushButtonColorLayer_clicked()
 		currentLayer = -1;
 		return;
 	}
-	updateImage();*/
+	updateColorInLayer(layer, color);
+	updateImage();
 }
 void ImageViewer::on_pushButtonColorPalette_clicked()
 {
@@ -781,11 +783,40 @@ void ImageViewer::drawObject(Object object)
 		w->draw(object.getPoints(), object.getColor(), ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 	}
 }
+void ImageViewer::updateColorInLayer(int layer, QColor color)
+{
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (i == layer)
+		{
+			objects[i].setColor(color);
+		}
+	}
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i].print();
+	}
+}
+void ImageViewer::updateLayer(int newLayer)
+{
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (i == currentLayer)
+		{
+			objects.insert(newLayer, objects[currentLayer]);
+		}
+	}
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i].setZbuffer(i+1);
+		objects[i].print();
+	}
+}
 void ImageViewer::on_pushButtonChangeLayer_clicked()
 {
 	int newLayer = ui->spinBoxNewLayer->value();
 	qDebug() << newLayer;
-	/*currentLayer = newLayer;
+	currentLayer = newLayer;
 	if (objects.size() < currentLayer)
 	{
 		msgBox.setText("Wrong layer.");
@@ -793,7 +824,8 @@ void ImageViewer::on_pushButtonChangeLayer_clicked()
 		currentLayer = -1;
 		return;
 	}
-	updateImage();*/
+	updateLayer(newLayer);
+	updateImage();
 }
 
 //Transformations

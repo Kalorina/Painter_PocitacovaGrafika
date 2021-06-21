@@ -111,6 +111,8 @@ private slots:
 	void objectLayersAccepted();
 	void updateImage();
 	void drawObject(Object object);
+	void updateColorInLayer(int layer, QColor color);
+	void updateLayer(int newLayer);
 	void on_pushButtonChangeLayer_clicked();
 
 	//Transformations
