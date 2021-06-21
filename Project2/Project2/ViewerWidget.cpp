@@ -67,7 +67,7 @@ void ViewerWidget::setPixel(int x, int y, unsigned char r, unsigned char g, unsi
 	}
 }
 
-void ViewerWidget::drawLineDDA(QPointF startPoint, QPointF endPoint,QColor color)
+void ViewerWidget::drawLineDDA(QPointF startPoint, QPointF endPoint,QColor color, int z)
 {
 	QPointF a, b;
 	if (startPoint.x() > endPoint.x())
@@ -93,7 +93,7 @@ void ViewerWidget::drawLineDDA(QPointF startPoint, QPointF endPoint,QColor color
 	{
 		for (int i = a.x(); i < b.x(); i++)
 		{
-			setPixel(i, y, color);
+			setPixelZ(i, y, z, color);
 			y = y + m;
 		}
 	}
@@ -108,12 +108,13 @@ void ViewerWidget::drawLineDDA(QPointF startPoint, QPointF endPoint,QColor color
 		}
 		for (int i = a.y(); i < b.y(); i++)
 		{
-			setPixel(int(a.x() + (i - a.y()) / m), i + 1, color);
+			setPixelZ(int(a.x() + (i - a.y()) / m), i + 1, z, color);
 		}
 	}
-	update();
+	//update();
+	drawBuffer();
 }
-void ViewerWidget::drawCircleDDA(QPointF originPoint, QPointF radiusPoint, QColor color)
+void ViewerWidget::drawCircleDDA(QPointF originPoint, QPointF radiusPoint, QColor color, int z)
 {
 	double originX = originPoint.x();
 	double originY= originPoint.y();
@@ -137,17 +138,17 @@ void ViewerWidget::drawCircleDDA(QPointF originPoint, QPointF radiusPoint, QColo
 		b.setX(originX + radius * qCos(i + step));
 		b.setY(originY + radius * qSin(i + step));
 
-		drawLineDDA(a, b, color);
+		drawLineDDA(a, b, color,z);
 
 		a.setX(originX + radius * qCos(i));
 		a.setY(originY + radius * qSin(i));
 		b.setX(originX + radius * qCos(i - step));
 		b.setY(originY + radius * qSin(i - step));
 
-		drawLineDDA(a, b, color);
+		drawLineDDA(a, b, color,z);
 	}
 }
-void ViewerWidget::drawLineBresen(QPointF startPoint, QPointF endPoint, QColor color)
+void ViewerWidget::drawLineBresen(QPointF startPoint, QPointF endPoint, QColor color, int z)
 {
 	QPointF a, b;
 	if (startPoint.x() > endPoint.x())
@@ -187,7 +188,7 @@ void ViewerWidget::drawLineBresen(QPointF startPoint, QPointF endPoint, QColor c
 			
 			for (int i = y1; i < y2; i++)
 			{
-				setPixel(x1, i, color);
+				setPixelZ(x1, i, z, color);
 				if (p > 0)
 				{
 					x1++;
@@ -208,7 +209,7 @@ void ViewerWidget::drawLineBresen(QPointF startPoint, QPointF endPoint, QColor c
 
 			for (int i = x1; i < x2; i++)
 			{
-				setPixel(i, y1, color);
+				setPixelZ(i, y1, z, color);
 				if (p > 0)
 				{
 					y1++;
@@ -232,7 +233,7 @@ void ViewerWidget::drawLineBresen(QPointF startPoint, QPointF endPoint, QColor c
 			
 			for (int i = x1; i < x2; i++)
 			{
-				setPixel(i, y1, color);
+				setPixelZ(i, y1, z, color);
 				if (p <= 0)
 				{
 					y1--;
@@ -258,7 +259,7 @@ void ViewerWidget::drawLineBresen(QPointF startPoint, QPointF endPoint, QColor c
 
 			for (int i = y1; i < y2; i++)
 			{
-				setPixel(x1, i, color);
+				setPixelZ(x1, i, z, color);
 				if (p <= 0)
 				{
 					x1--;
@@ -271,9 +272,10 @@ void ViewerWidget::drawLineBresen(QPointF startPoint, QPointF endPoint, QColor c
 			}
 		}
 	}
-	update();
+	//update();
+	drawBuffer();
 }
-void ViewerWidget::drawCircleBresen(QPointF originPoint, QPointF radiusPoint, QColor color)
+void ViewerWidget::drawCircleBresen(QPointF originPoint, QPointF radiusPoint, QColor color, int z)
 {
 	int x1 = originPoint.x();
 	int y1 = originPoint.y();
@@ -292,17 +294,17 @@ void ViewerWidget::drawCircleBresen(QPointF originPoint, QPointF radiusPoint, QC
 
 	for (int i = 0; i <= y; i++)
 	{
-		setPixel(i + x1, y + y1, color);
-		setPixel(y + x1, i + y1, color);
+		setPixelZ(i + x1, y + y1, z, color);
+		setPixelZ(y + x1, i + y1, z, color);
 
-		setPixel(i + x1, y1 - y, color);
-		setPixel(y + x1, y1 - i, color);
+		setPixelZ(i + x1, y1 - y, z, color);
+		setPixelZ(y + x1, y1 - i, z, color);
 
-		setPixel(x1 - y, y1 + i, color);
-		setPixel(x1 - i, y1 + y, color);
+		setPixelZ(x1 - y, y1 + i, z, color);
+		setPixelZ(x1 - i, y1 + y, z, color);
 
-		setPixel(x1 - i, y1 - y, color);
-		setPixel(x1 - y, y1 - i, color);
+		setPixelZ(x1 - i, y1 - y, z, color);
+		setPixelZ(x1 - y, y1 - i, z, color);
 
 		if (p>0)
 		{
@@ -313,7 +315,8 @@ void ViewerWidget::drawCircleBresen(QPointF originPoint, QPointF radiusPoint, QC
 		p = p + twoX;
 		twoX += 2;
 	}
-	update();
+	//update();
+	drawBuffer();
 }
 
 QVector<QPointF> ViewerWidget::cyrusBeck(QPointF a, QPointF b)
@@ -436,7 +439,7 @@ QVector<QPointF> ViewerWidget::sutherlandHodgman(QVector<QPointF> points, int mi
 	return W;
 }
 
-void ViewerWidget::scanLine(QVector<QPointF> points, QColor color)
+void ViewerWidget::scanLine(QVector<QPointF> points, int z, QColor color)
 {
 	Edge e;
 	QVector<Edge> edges;
@@ -555,7 +558,7 @@ void ViewerWidget::scanLine(QVector<QPointF> points, QColor color)
 			{
 				for (int k = (int)ZAH[j].getX(); k <= (int)ZAH[j + 1].getX(); k++)
 				{
-					setPixel(k, y, color);
+					setPixelZ(k, y, z, color);
 				}
 			}
 		}
@@ -581,7 +584,8 @@ void ViewerWidget::scanLine(QVector<QPointF> points, QColor color)
 		ZAH = filteredZAH;
 		y++;
 	}
-	update();
+	//update();
+	drawBuffer();
 }
 QVector<Edge> ViewerWidget::redirectEdgesByY(QVector<Edge> edges)
 {
@@ -614,7 +618,7 @@ QVector<QPointF> ViewerWidget::sortByYThenByX(QVector<QPointF> points)
 	return points;
 }
 
-void ViewerWidget::scanLineTriangle(QVector<QPointF> points, QColor color, QString interpolation)
+void ViewerWidget::scanLineTriangle(QVector<QPointF> points, int z, QColor color, QString interpolation)
 {
 	points = sortByYThenByX(points);
 
@@ -685,8 +689,8 @@ void ViewerWidget::scanLineTriangle(QVector<QPointF> points, QColor color, QStri
 			for (int i = x1; i < x2; i++)
 			{
 				QPointF t = QPointF(i, y);
-				QColor c = interpolationPixel(interpolation, points, t, c1, c2, c3);
-				setPixel(i, y, c);
+				QColor c = interpolationPixel(interpolation, points, t, z, c1, c2, c3);
+				setPixelZ(i, y, z, c);
 			}
 		}
 		x1 += a.getW(); 
@@ -706,18 +710,19 @@ void ViewerWidget::scanLineTriangle(QVector<QPointF> points, QColor color, QStri
 			for (int i = x1; i <= x2; i++)
 			{
 				QPointF t = QPointF(i, y);
-				QColor c = interpolationPixel(interpolation, points, t, c1, c2, c3);
-				setPixel(i, y, c);
+				QColor c = interpolationPixel(interpolation, points, t, z, c1, c2, c3);
+				setPixelZ(i, y, z, c);
 			}
 			x1 += c.getW();
 			x2 += d.getW();
 			y++;
 		}
 	}
-	update();
+	//update();
+	drawBuffer();
 }
 
-QColor ViewerWidget::nearestNeighbor(QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3)
+QColor ViewerWidget::nearestNeighbor(QVector<QPointF> points, QPointF p, int z, QColor c1, QColor c2, QColor c3)
 {
 	double x = points[0].x() - p.x();
 	double y = points[0].y() - p.y();
@@ -747,7 +752,7 @@ QColor ViewerWidget::nearestNeighbor(QVector<QPointF> points, QPointF p, QColor 
 
 	return color;
 }
-QColor ViewerWidget::Barycentric(QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3)
+QColor ViewerWidget::Barycentric(QVector<QPointF> points, QPointF p, int z, QColor c1, QColor c2, QColor c3)
 {
 	points = sortByYThenByX(points);
 
@@ -780,7 +785,7 @@ QColor ViewerWidget::Barycentric(QVector<QPointF> points, QPointF p, QColor c1, 
 
 	return c;
 }
-QColor ViewerWidget::interpolationPixel(QString interpolation, QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3)
+QColor ViewerWidget::interpolationPixel(QString interpolation, QVector<QPointF> points, QPointF p, int z, QColor c1, QColor c2, QColor c3)
 {
 	if (interpolation == "None")
 	{
@@ -788,15 +793,15 @@ QColor ViewerWidget::interpolationPixel(QString interpolation, QVector<QPointF> 
 	}
 	if (interpolation == "Nearest Neighbor")
 	{
-		return nearestNeighbor(points, p, c1, c2, c3);
+		return nearestNeighbor(points, p, z, c1, c2, c3);
 	}
 	if(interpolation == "Barycentrick")
 	{
-		return Barycentric(points, p, c1, c2, c3);
+		return Barycentric(points, p, z, c1, c2, c3);
 	}
 }
 
-void ViewerWidget::draw(QVector<QPointF> points, QColor color, QString algorithm, QString interpolation, bool fillOn)
+void ViewerWidget::draw(QVector<QPointF> points, int z, QColor color, QString algorithm, QString interpolation, bool fillOn)
 {
 	if (points.size() == 2)
 	{
@@ -805,7 +810,7 @@ void ViewerWidget::draw(QVector<QPointF> points, QColor color, QString algorithm
 			QVector<QPointF> pointsNew = cyrusBeck(points[0], points[1]);
 			if (pointsNew.size() == 2)
 			{
-				drawLineDDA(pointsNew[0], pointsNew[1], color);
+				drawLineDDA(pointsNew[0], pointsNew[1], color, z);
 			}
 		}
 		if (algorithm == "Bresenhamov")
@@ -813,7 +818,7 @@ void ViewerWidget::draw(QVector<QPointF> points, QColor color, QString algorithm
 			QVector<QPointF> pointsNew = cyrusBeck(points[0], points[1]);
 			if (pointsNew.size() == 2)
 			{
-				drawLineBresen(pointsNew[0], pointsNew[1], color);
+				drawLineBresen(pointsNew[0], pointsNew[1], color, z);
 			}
 		}
 	}
@@ -851,13 +856,13 @@ void ViewerWidget::draw(QVector<QPointF> points, QColor color, QString algorithm
 		{
 			if (algorithm == "DDA")
 			{
-				drawLineDDA(W[i], W[i + 1], color);
-				drawLineDDA(W.first(), W.last(), color);
+				drawLineDDA(W[i], W[i + 1], color, z);
+				drawLineDDA(W.first(), W.last(), color, z);
 			}
 			if (algorithm == "Bresenhamov")
 			{
-				drawLineBresen(W[i], W[i + 1], color);
-				drawLineBresen(W.first(), W.last(), color);
+				drawLineBresen(W[i], W[i + 1], color, z);
+				drawLineBresen(W.first(), W.last(), color, z);
 			}
 		}
 
@@ -865,46 +870,48 @@ void ViewerWidget::draw(QVector<QPointF> points, QColor color, QString algorithm
 		{
 			if (W.size() == 3)
 			{
-				scanLineTriangle(W, color, interpolation);
+				scanLineTriangle(W, z, color, interpolation);
 			}
 			else
 			{
 				if (!W.isEmpty())
 				{
-					scanLine(W, color);
+					scanLine(W, z, color);
 				}
 			}
 		}
 		
 	}
-	update();
+	//update();
+	drawBuffer();
 }
-void ViewerWidget::drawCircle(QVector<QPointF> points, QColor color, QString algorithm, bool fillOn)
+void ViewerWidget::drawCircle(QVector<QPointF> points, int z, QColor color, QString algorithm, bool fillOn)
 {
 	if (algorithm == "DDA")
 	{
-		drawCircleDDA(points[0], points[1], color);
+		drawCircleDDA(points[0], points[1], color, z);
 	}
 	if (algorithm == "Bresenhamov")
 	{
-		drawCircleBresen(points[0], points[1], color);
+		drawCircleBresen(points[0], points[1], color, z);
 	}
 
 	if (fillOn)
 	{
-		scanLine(points, color);
+		scanLine(points, z, color);
 	}
-	update();
+	//update();
+	drawBuffer();
 }
-void ViewerWidget::drawPoints(QVector<QPointF> points)
+void ViewerWidget::drawPoints(QVector<QPointF> points, int z)
 {
 	QColor color = QColor("red");
 	for (int i = 0; i < points.size(); i++)
 	{
-		setPixel(points[i].x(), points[i].y(), color);
+		setPixelZ(points[i].x(), points[i].y(), z, color);
 	}
 }
-void ViewerWidget::drawBezierCurve(QVector<QPointF> points, QColor color)
+void ViewerWidget::drawBezierCurve(QVector<QPointF> points, int z, QColor color)
 {
 	if (points.size() < 2) { return; }
 	else
@@ -940,7 +947,7 @@ void ViewerWidget::drawBezierCurve(QVector<QPointF> points, QColor color)
 
 			q1.setX(polynoms[n - 1][0].x()); q1.setY(polynoms[n - 1][0].y());
 			a.setX(std::floor(q0.x())); a.setY(std::floor(q0.y())); b.setX(std::floor(q1.x())); b.setY(std::floor(q1.y()));
-			drawLineDDA(a, b, color);
+			drawLineDDA(a, b, color, z);
 			q0.setX(q1.x()); q0.setY(q1.y());
 			polynoms.clear();
 			polynoms.resize(n);
@@ -951,10 +958,11 @@ void ViewerWidget::drawBezierCurve(QVector<QPointF> points, QColor color)
 			t += deltaT;
 		}
 		a.setX(q0.x()); a.setY(q0.y());
-		drawLineDDA(a, points[n - 1], color);
+		drawLineDDA(a, points[n - 1], color, z);
 	}
-	drawPoints(points);
-	update();
+	drawPoints(points, z);
+	//update();
+	drawBuffer();
 }
 void ViewerWidget::clear(QColor color)
 {
@@ -1010,8 +1018,14 @@ void ViewerWidget::drawBuffer()
 	}
 	update();
 }
-
-void ViewerWidget::clearBuffers()
+void ViewerWidget::setPixelZ(int x, int y, int z, QColor color)
+{
+	if (isInside(x, y)) 
+	{
+		fBuffer[x][y] = color;
+	}
+}
+void ViewerWidget::deleteBuffers()
 {
 	if (zBuffer == nullptr || fBuffer == nullptr) {
 		return;
@@ -1031,21 +1045,37 @@ void ViewerWidget::clearBuffers()
 	delete fBuffer;
 	fBuffer = nullptr;
 }
-
-void ViewerWidget::updateBuffers(QVector<QPointF> points, QVector<float> zCoordinates, QVector<QColor> colors)
+void ViewerWidget::clearBuffers()
+{
+	for (int i = 0; i < img->width(); i++)
+	{
+		for (int j = 0; j < img->height(); j++)
+		{
+			zBuffer[i][j] = std::numeric_limits<int>::min();
+		}
+	}
+	for (int i = 0; i < img->width(); i++)
+	{
+		for (int j = 0; j < img->height(); j++)
+		{
+			fBuffer[i][j] = QColor(255, 255, 255);
+		}
+	}
+}
+void ViewerWidget::createBuffers()
 {
 	if (zBuffer == nullptr)
 	{
-		zBuffer = new float* [img->width()];
+		zBuffer = new int* [img->width()];
 		for (int i = 0; i < img->width(); i++)
 		{
-			zBuffer[i] = new float[img->height()];
+			zBuffer[i] = new int[img->height()];
 		}
 		for (int i = 0; i < img->width(); i++)
 		{
 			for (int j = 0; j < img->height(); j++)
 			{
-				zBuffer[i][j] = std::numeric_limits<float>::min();
+				zBuffer[i][j] = std::numeric_limits<int>::min();
 			}
 		}
 	}
@@ -1065,10 +1095,8 @@ void ViewerWidget::updateBuffers(QVector<QPointF> points, QVector<float> zCoordi
 			}
 		}
 	}
-
-	scanLineBuffer(points, zCoordinates, colors[0], colors[1], colors[2]);
 }
-void ViewerWidget::scanLineBuffer(QVector<QPointF> points, QVector<float> zCoordinates, QColor c1, QColor c2, QColor c3)
+/*void ViewerWidget::scanLineBuffer(QVector<QPointF> points, QVector<float> zCoordinates, int z, QColor c1, QColor c2, QColor c3)
 {
 	points = sortByYThenByX(points);
 
@@ -1136,8 +1164,7 @@ void ViewerWidget::scanLineBuffer(QVector<QPointF> points, QVector<float> zCoord
 			for (int i = x1; i < x2; i++)
 			{
 				QPointF t = QPointF(i, y);
-				float z = interpolationZ(points, t, zCoordinates);
-				QColor color = interpolationPixel("Barycentrick", points, t, c1, c2, c3);
+				QColor color = interpolationPixel("Barycentrick", points, t, z, c1, c2, c3);
 
 				if (zBuffer[i][(int)y] < z)
 				{
@@ -1163,8 +1190,7 @@ void ViewerWidget::scanLineBuffer(QVector<QPointF> points, QVector<float> zCoord
 			for (int i = x1; i <= x2; i++)
 			{
 				QPointF t = QPointF(i, y);
-				float z = interpolationZ(points, t, zCoordinates);
-				QColor color = interpolationPixel("Barycentrick", points, t, c1, c2, c3);
+				QColor color = interpolationPixel("Barycentrick", points, t, z, c1, c2, c3);
 
 				if (zBuffer[i][(int)y] < z)
 				{
@@ -1177,7 +1203,8 @@ void ViewerWidget::scanLineBuffer(QVector<QPointF> points, QVector<float> zCoord
 			y++;
 		}
 	}
-}
+}*/
+
 //Slots
 void ViewerWidget::paintEvent(QPaintEvent* event)
 {

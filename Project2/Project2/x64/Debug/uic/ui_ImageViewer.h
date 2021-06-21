@@ -374,7 +374,7 @@ public:
         comboBoxAlg->setItemText(1, QCoreApplication::translate("ImageViewerClass", "Bresenhamov", nullptr));
 
         label_2->setText(QCoreApplication::translate("ImageViewerClass", "Interpolacia", nullptr));
-        pushButtonSquere->setText(QCoreApplication::translate("ImageViewerClass", "Squere", nullptr));
+        pushButtonSquere->setText(QCoreApplication::translate("ImageViewerClass", "Square", nullptr));
         pushButtonCircle->setText(QCoreApplication::translate("ImageViewerClass", "Circle", nullptr));
         pushButtonBezier->setText(QCoreApplication::translate("ImageViewerClass", "Bezier Curve", nullptr));
         pushButtonDraw->setText(QCoreApplication::translate("ImageViewerClass", "Draw Object", nullptr));

@@ -82,6 +82,7 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 
 	if (drawingActive)
 	{
+		w->createBuffers();
 		if (e->button() == Qt::LeftButton)
 		{
 			points.append(e->pos());
@@ -91,18 +92,18 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 		if (e->button() == Qt::RightButton && !polygoneMode && !circleMode && !bezierCurveMode && !squereMode && points.size() == 2)
 		{
 			//line
-			Object object = Object(points, color, objects.size(), "line");
+			Object object = Object(points, color, objects.size(), "line", ui->checkBoxFill->isChecked());
 			objects.append(object);
-			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
+			w->draw(object.getPoints(), object.getZbuffer(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), object.getFill());
 			drawingActive = false;
 			objectDrawn = true;
 		}
 		if (e->button() == Qt::RightButton && !polygoneMode && !bezierCurveMode && !squereMode && circleMode && points.size() == 2)
 		{
 			//Circle
-			Object object = Object(points, color, objects.size(), "circle");
+			Object object = Object(points, color, objects.size(), "circle", ui->checkBoxFill->isChecked());
 			objects.append(object);
-			w->drawCircle(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
+			w->drawCircle(object.getPoints(), object.getZbuffer(), color, ui->comboBoxAlg->currentText(), object.getFill());
 			drawingActive = false;
 			objectDrawn = true;
 		}
@@ -114,27 +115,27 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 			QVector<QPointF> newPoints;
 			newPoints.append(points[0]); newPoints.append(C); newPoints.append(points[1]); newPoints.append(D);
 			points = newPoints;
-			Object object = Object(points, color, objects.size(), "square");
+			Object object = Object(points, color, objects.size(), "square", ui->checkBoxFill->isChecked());
 			objects.append(object);
-			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
+			w->draw(object.getPoints(), object.getZbuffer(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), object.getFill());
 			drawingActive = false;
 			objectDrawn = true;
 		}
 		if (e->button() == Qt::RightButton && polygoneMode && !squereMode && !bezierCurveMode)
 		{
 			//polygone
-			Object object = Object(points, color, objects.size(), "polygone");
+			Object object = Object(points, color, objects.size(), "polygone", ui->checkBoxFill->isChecked());
 			objects.append(object);
-			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
+			w->draw(object.getPoints(), object.getZbuffer(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), object.getFill());
 			drawingActive = false;
 			objectDrawn = true;
 		}
 		if (e->button() == Qt::RightButton && !polygoneMode && !squereMode && bezierCurveMode)
 		{
 			//curve
-			Object object = Object(points, color, objects.size(), "curve");
+			Object object = Object(points, color, objects.size(), "curve", ui->checkBoxFill->isChecked());
 			objects.append(object);
-			w->drawBezierCurve(object.getPoints(), color);
+			w->drawBezierCurve(object.getPoints(), object.getZbuffer(), color);
 			drawingActive = false;
 			objectDrawn = true;
 		}
@@ -293,6 +294,7 @@ bool ImageViewer::saveImage(QString filename)
 void ImageViewer::clearImage()
 {
 	ViewerWidget* w = getCurrentViewerWidget();
+	w->clearBuffers();
 	w->clear();
 }
 void ImageViewer::setBackgroundColor(QColor color)
@@ -410,6 +412,7 @@ void ImageViewer::on_actionSave_Program_State_triggered()
 		{
 			out << objects[i].getType() << "\n";
 			out << objects[i].getColor().red() << "," << objects[i].getColor().green() << "," << objects[i].getColor().blue() << "\n";
+			out << objects[i].getFill();
 			out << objects[i].getZbuffer() << "\n";
 			out << objects[i].getNumberOfPoints() << "\n";
 			for (int j = 0; j < objects[i].getPoints().size(); j++)
@@ -526,10 +529,19 @@ void ImageViewer::loadObjects()
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
 			object.setZbuffer(data[i + 2].toInt());
+			bool fill;
+			if (data[i+3] == "00")
+			{
+				object.setFill(true);
+			}
+			else
+			{
+				object.setFill(false);
+			}
 			QVector<QPointF> points;
 			for (int j = 0; j < 2; j++)
 			{
-				QString pointS = data[4 + i + j];
+				QString pointS = data[5 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list1: [ "x", "y"]
 				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
@@ -548,10 +560,19 @@ void ImageViewer::loadObjects()
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
 			object.setZbuffer(data[i + 2].toInt());
+			bool fill;
+			if (data[i + 3] == "00")
+			{
+				object.setFill(true);
+			}
+			else
+			{
+				object.setFill(false);
+			}
 			QVector<QPointF> points;
 			for (int j = 0; j < 2; j++)
 			{
-				QString pointS = data[4 + i + j];
+				QString pointS = data[5 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list1: [ "x", "y"]
 				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
@@ -570,10 +591,19 @@ void ImageViewer::loadObjects()
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
 			object.setZbuffer(data[i + 2].toInt());
+			bool fill;
+			if (data[i + 3] == "00")
+			{
+				object.setFill(true);
+			}
+			else
+			{
+				object.setFill(false);
+			}
 			QVector<QPointF> points;
 			for (int j = 0; j < 4; j++)
 			{
-				QString pointS = data[4 + i + j];
+				QString pointS = data[5 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list1: [ "x", "y"]
 				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
@@ -592,11 +622,20 @@ void ImageViewer::loadObjects()
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
 			object.setZbuffer(data[i + 2].toInt());
-			int numberOfPoints = data[i + 3].toInt();
+			bool fill;
+			if (data[i + 3] == "00")
+			{
+				object.setFill(true);
+			}
+			else
+			{
+				object.setFill(false);
+			}
+			int numberOfPoints = data[i + 4].toInt();
 			QVector<QPointF> points;
 			for (int j = 0; j < numberOfPoints; j++)
 			{
-				QString pointS = data[4 + i + j];
+				QString pointS = data[5 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list1: [ "x", "y"]
 				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
@@ -615,11 +654,20 @@ void ImageViewer::loadObjects()
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
 			object.setZbuffer(data[i + 2].toInt());
-			int numberOfPoints = data[i + 3].toInt();
+			bool fill;
+			if (data[i + 3] == "00")
+			{
+				object.setFill(true);
+			}
+			else
+			{
+				object.setFill(false);
+			}
+			int numberOfPoints = data[i + 4].toInt();
 			QVector<QPointF> points;
 			for (int j = 0; j < numberOfPoints; j++)
 			{
-				QString pointS = data[4 + i + j];
+				QString pointS = data[5 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list: [ "x", "y"]
 				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
@@ -714,7 +762,7 @@ void ImageViewer::on_pushButtonLayer_clicked()
 }
 void ImageViewer::on_pushButtonColorLayer_clicked()
 {
-	int layer = ui->spinBoxLayerColor->value();
+	int layer = ui->spinBoxLayerColor->value() - 1;
 	qDebug() << layer;
 	currentLayer = layer;
 	if (objects.size() < currentLayer)
@@ -760,18 +808,18 @@ void ImageViewer::updateImage()
 void ImageViewer::drawObject(Object object)
 {
 	ViewerWidget* w = getCurrentViewerWidget();
-	
+	w->createBuffers();
 	if (object.getType() == "circle")
 	{
-		w->drawCircle(object.getPoints(), object.getColor(), ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
+		w->drawCircle(object.getPoints(), object.getZbuffer(), object.getColor(), ui->comboBoxAlg->currentText(), object.getFill());
 	}
 	else if (object.getType() == "curve")
 	{
-		w->drawBezierCurve(object.getPoints(), object.getColor());
+		w->drawBezierCurve(object.getPoints(), object.getZbuffer(), object.getColor());
 	}
 	else
 	{
-		w->draw(object.getPoints(), object.getColor(), ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
+		w->draw(object.getPoints(), object.getZbuffer(), object.getColor(), ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), object.getFill());
 	}
 }
 void ImageViewer::updateColorInLayer(int layer, QColor color)
@@ -790,16 +838,13 @@ void ImageViewer::updateColorInLayer(int layer, QColor color)
 }
 void ImageViewer::updateLayer(int newLayer)
 {
+	Object object = objects[currentLayer];
+	objects.remove(currentLayer);
+	objects.insert(newLayer, object);
+	
 	for (int i = 0; i < objects.size(); i++)
 	{
-		if (i == currentLayer)
-		{
-			objects.insert(newLayer, objects[currentLayer]);
-		}
-	}
-	for (int i = 0; i < objects.size(); i++)
-	{
-		objects[i].setZbuffer(i+1);
+		objects[i].setZbuffer(i);
 		objects[i].print();
 	}
 }

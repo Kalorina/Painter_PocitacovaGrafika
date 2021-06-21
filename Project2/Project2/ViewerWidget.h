@@ -11,7 +11,7 @@ private:
 	QRgb* data = nullptr;
 	QPainter* painter = nullptr;
 
-	float** zBuffer = nullptr;
+	int** zBuffer = nullptr;
 	QColor** fBuffer = nullptr;
 
 public:
@@ -40,35 +40,36 @@ public:
 	int getImgWidth() { return img->width(); };
 	int getImgHeight() { return img->height(); };
 
-	void drawLineDDA(QPointF startPoint, QPointF endPoint, QColor color);
-	void drawCircleDDA(QPointF originPoint, QPointF radiusPoint, QColor color);
-	void drawLineBresen(QPointF startPoint, QPointF endPoint, QColor color);
-	void drawCircleBresen(QPointF originPoint, QPointF radiusPoint, QColor color);
+	void drawLineDDA(QPointF startPoint, QPointF endPoint, QColor color, int z);
+	void drawCircleDDA(QPointF originPoint, QPointF radiusPoint, QColor color, int z);
+	void drawLineBresen(QPointF startPoint, QPointF endPoint, QColor color, int z);
+	void drawCircleBresen(QPointF originPoint, QPointF radiusPoint, QColor color, int z);
 
-	void draw(QVector<QPointF> points, QColor color, QString algorithm, QString interpolation, bool fillOn);
-	void drawCircle(QVector<QPointF> points, QColor color, QString algorithm, bool fillOn);
-	void drawPoints(QVector<QPointF> points);
-	void drawBezierCurve(QVector<QPointF> points, QColor color);
+	void draw(QVector<QPointF> points, int z, QColor color, QString algorithm, QString interpolation, bool fillOn);
+	void drawCircle(QVector<QPointF> points, int z, QColor color, QString algorithm, bool fillOn);
+	void drawPoints(QVector<QPointF> points, int z);
+	void drawBezierCurve(QVector<QPointF> points, int z, QColor color);
 
 	//orezavanie 
 	QVector<QPointF> cyrusBeck(QPointF a, QPointF b); //usecka
 	QVector<QPointF> sutherlandHodgman(QVector<QPointF> points, int minX); //polygone
 
 	//Vyplnanie farieb
-	void scanLine(QVector<QPointF> points, QColor color);
+	void scanLine(QVector<QPointF> points, int z, QColor color);
 	QVector<Edge> redirectEdgesByY(QVector<Edge> edges);
 	QVector<QPointF> sortByYThenByX(QVector<QPointF> points);
 
-	void scanLineTriangle(QVector<QPointF> points, QColor color, QString interpolation);
-	QColor nearestNeighbor(QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3);
-	QColor Barycentric(QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3);
-	QColor interpolationPixel(QString interpolation, QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3);
+	void scanLineTriangle(QVector<QPointF> points, int z, QColor color, QString interpolation);
+	QColor nearestNeighbor(QVector<QPointF> points, QPointF p, int z, QColor c1, QColor c2, QColor c3);
+	QColor Barycentric(QVector<QPointF> points, QPointF p, int z, QColor c1, QColor c2, QColor c3);
+	QColor interpolationPixel(QString interpolation, QVector<QPointF> points, QPointF p, int z, QColor c1, QColor c2, QColor c3);
 
 	//zBuffer
 	float interpolationZ(QVector<QPointF> points, QPointF p, QVector<float> zCoordinates);
-	void updateBuffers(QVector<QPointF> points, QVector<float> zCoordinates, QVector<QColor> colors);
-	void scanLineBuffer(QVector<QPointF> points, QVector<float> zCoordinates, QColor c1, QColor c2, QColor c3);
 	void drawBuffer();
+	void createBuffers();
+	void setPixelZ(int x, int y, int z, QColor color);
+	void deleteBuffers();
 	void clearBuffers();
 	void clear(QColor color = Qt::white);
 
