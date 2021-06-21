@@ -17,6 +17,7 @@ ImageViewer::ImageViewer(QWidget* parent)
 	ui->pushButtonCircle->setDisabled(true);
 	ui->pushButtonBezier->setDisabled(true);
 	ui->pushButtonSquere->setDisabled(true);
+	ui->pushButtonLine->setDisabled(true);
 
 	ui->groupBox_2->setDisabled(true);
 }
@@ -414,7 +415,7 @@ void ImageViewer::on_actionSave_Program_State_triggered()
 		for (int i = 0; i < objects.size(); i++)
 		{
 			out << objects[i].getType() << "\n";
-			out << objects[i].getColor().red() << "," << objects[i].getColor().green() << "," << objects[i].getColor().blue() "\n";
+			out << objects[i].getColor().red() << "," << objects[i].getColor().green() << "," << objects[i].getColor().blue() << "\n";
 			out << objects[i].getZbuffer() << "\n";
 			out << objects[i].getNumberOfPoints() << "\n";
 			for (int j = 0; j < objects[i].getPoints().size(); j++)
@@ -504,6 +505,7 @@ void ImageViewer::on_pushButtonDraw_clicked()
 	ui->pushButtonCircle->setEnabled(true);
 	ui->pushButtonBezier->setEnabled(true);
 	ui->pushButtonSquere->setEnabled(true);
+	ui->pushButtonLine->setEnabled(true);
 
 	ui->groupBox_2->setDisabled(true);
 }
@@ -514,14 +516,15 @@ void ImageViewer::loadObjects()
 	int numberOfObjects = number.toInt();
 	qDebug() << numberOfObjects;
 
-	for (int i = 1; i < data.size()+1; i++)
+	for (int i = 1; i < data.size(); i++)
 	{
 		QString type = data[i];
+		//qDebug() << data[i];
 		if (type == "line")
 		{
 			Object object;
 			object.setType(type);
-			QString stringColor = data[1 + i].toInt();
+			QString stringColor = data[1 + i];
 			QStringList list = stringColor.split(QLatin1Char(','));
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
@@ -530,10 +533,10 @@ void ImageViewer::loadObjects()
 			QVector<QPointF> points;
 			for (int j = 0; j < 2; j++)
 			{
-				QString pointS = data[5 + j].toInt();
+				QString pointS = data[4 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list1: [ "x", "y"]
-				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
 				points.append(point);
 			}
 			object.setPoints(points);
@@ -543,7 +546,7 @@ void ImageViewer::loadObjects()
 		{
 			Object object;
 			object.setType(type);
-			QString stringColor = data[1 + i].toInt();
+			QString stringColor = data[1 + i];
 			QStringList list = stringColor.split(QLatin1Char(','));
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
@@ -552,10 +555,10 @@ void ImageViewer::loadObjects()
 			QVector<QPointF> points;
 			for (int j = 0; j < 2; j++)
 			{
-				QString pointS = data[5 + j].toInt();
+				QString pointS = data[4 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list1: [ "x", "y"]
-				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
 				points.append(point);
 			}
 			object.setPoints(points);
@@ -565,7 +568,7 @@ void ImageViewer::loadObjects()
 		{
 			Object object;
 			object.setType(type);
-			QString stringColor = data[1 + i].toInt();
+			QString stringColor = data[1 + i];
 			QStringList list = stringColor.split(QLatin1Char(','));
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
@@ -574,10 +577,10 @@ void ImageViewer::loadObjects()
 			QVector<QPointF> points;
 			for (int j = 0; j < 4; j++)
 			{
-				QString pointS = data[5 + j].toInt();
+				QString pointS = data[4 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list1: [ "x", "y"]
-				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
 				points.append(point);
 			}
 			object.setPoints(points);
@@ -587,7 +590,7 @@ void ImageViewer::loadObjects()
 		{
 			Object object;
 			object.setType(type);
-			QString stringColor = data[1 + i].toInt();
+			QString stringColor = data[1 + i];
 			QStringList list = stringColor.split(QLatin1Char(','));
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
@@ -597,10 +600,10 @@ void ImageViewer::loadObjects()
 			QVector<QPointF> points;
 			for (int j = 0; j < numberOfPoints; j++)
 			{
-				QString pointS = data[5 + j].toInt();
+				QString pointS = data[4 + i + j];
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list1: [ "x", "y"]
-				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
 				points.append(point);
 			}
 			object.setPoints(points);
@@ -610,7 +613,7 @@ void ImageViewer::loadObjects()
 		{
 			Object object;
 			object.setType(type);
-			QString stringColor = data[1 + i].toInt();
+			QString stringColor = data[1 + i];
 			QStringList list = stringColor.split(QLatin1Char(','));
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
@@ -620,11 +623,11 @@ void ImageViewer::loadObjects()
 			QVector<QPointF> points;
 			for (int j = 0; j < numberOfPoints; j++)
 			{
-				QString pointS = data[5 + j].toInt();
+				QString pointS = data[4 + i + j];
+				qDebug() << pointS;
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list: [ "x", "y"]
-				qDebug() << list;
-				QPointF point = QPointF(list[0].toInt(), list[1].toInt());
+				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
 				points.append(point);
 			}
 			object.setPoints(points);
@@ -632,12 +635,19 @@ void ImageViewer::loadObjects()
 		}
 	}
 
-	qDebug() << objects.size();
+	if (!objects.isEmpty())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Data did load.");
+		msgBox.exec();
+	}
 
-	for (int i = 0; i < objects.size(); i++)
+	qDebug() << "Number of Objects" << objects.size();
+
+	/*for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i].print();
-	}
+	}*/
 }
 void ImageViewer::on_pushButtonPolygone_clicked()
 {
@@ -646,6 +656,7 @@ void ImageViewer::on_pushButtonPolygone_clicked()
 	ui->pushButtonCircle->setDisabled(true);
 	ui->pushButtonBezier->setDisabled(true);
 	ui->pushButtonSquere->setDisabled(true);
+	ui->pushButtonLine->setDisabled(true);
 }
 void ImageViewer::on_pushButtonCircle_clicked()
 {
@@ -654,6 +665,7 @@ void ImageViewer::on_pushButtonCircle_clicked()
 	ui->pushButtonCircle->setDisabled(true);
 	ui->pushButtonBezier->setDisabled(true);
 	ui->pushButtonSquere->setDisabled(true);
+	ui->pushButtonLine->setDisabled(true);
 }
 void ImageViewer::on_pushButtonBezier_clicked()
 {
@@ -661,6 +673,7 @@ void ImageViewer::on_pushButtonBezier_clicked()
 	ui->pushButtonCircle->setDisabled(true);
 	ui->pushButtonBezier->setDisabled(true);
 	ui->pushButtonSquere->setDisabled(true);
+	ui->pushButtonLine->setDisabled(true);
 	bezierCurveMode = true;
 
 	msgBox.setText("Reminder: At least 2 points are required.");
@@ -672,10 +685,19 @@ void ImageViewer::on_pushButtonSquere_clicked()
 	ui->pushButtonCircle->setDisabled(true);
 	ui->pushButtonBezier->setDisabled(true);
 	ui->pushButtonSquere->setDisabled(true);
+	ui->pushButtonLine->setDisabled(true);
 	squereMode = true;
 
 	msgBox.setText("Reminder: Just 2 points are required.");
 	msgBox.exec();
+}
+void ImageViewer::on_pushButtonLine_clicked()
+{
+	ui->pushButtonPolygone->setDisabled(true);
+	ui->pushButtonCircle->setDisabled(true);
+	ui->pushButtonBezier->setDisabled(true);
+	ui->pushButtonSquere->setDisabled(true);
+	ui->pushButtonLine->setDisabled(true);
 }
 void ImageViewer::on_pushButtonClear_clicked()
 {

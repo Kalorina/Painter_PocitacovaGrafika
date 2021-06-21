@@ -101,6 +101,7 @@ private slots:
 	void on_pushButtonCircle_clicked();
 	void on_pushButtonBezier_clicked();
 	void on_pushButtonSquere_clicked();
+	void on_pushButtonLine_clicked();
 	void on_pushButtonDraw_clicked();
 
 	//ObjectLayers

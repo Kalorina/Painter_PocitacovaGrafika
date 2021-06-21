@@ -46,17 +46,18 @@ public:
     QHBoxLayout *horizontalLayout;
     QGroupBox *groupBoxSetUp;
     QGridLayout *gridLayout;
-    QPushButton *pushButtonDraw;
-    QPushButton *pushButtonClear;
     QLabel *label;
     QComboBox *comboBoxAlg;
-    QPushButton *pushButtonBezier;
-    QPushButton *pushButtonPolygone;
+    QLabel *label_2;
     QPushButton *pushButtonSquere;
     QPushButton *pushButtonCircle;
-    QCheckBox *checkBoxFill;
-    QLabel *label_2;
+    QPushButton *pushButtonBezier;
+    QPushButton *pushButtonDraw;
+    QPushButton *pushButtonPolygone;
+    QPushButton *pushButtonClear;
     QComboBox *comboBoxInterpolation;
+    QCheckBox *checkBoxFill;
+    QPushButton *pushButtonLine;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_2;
     QGroupBox *groupBox_2;
@@ -117,16 +118,6 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        pushButtonDraw = new QPushButton(groupBoxSetUp);
-        pushButtonDraw->setObjectName(QString::fromUtf8("pushButtonDraw"));
-
-        gridLayout->addWidget(pushButtonDraw, 0, 0, 1, 1);
-
-        pushButtonClear = new QPushButton(groupBoxSetUp);
-        pushButtonClear->setObjectName(QString::fromUtf8("pushButtonClear"));
-
-        gridLayout->addWidget(pushButtonClear, 1, 0, 1, 1);
-
         label = new QLabel(groupBoxSetUp);
         label->setObjectName(QString::fromUtf8("label"));
 
@@ -139,35 +130,40 @@ public:
 
         gridLayout->addWidget(comboBoxAlg, 2, 1, 1, 1);
 
-        pushButtonBezier = new QPushButton(groupBoxSetUp);
-        pushButtonBezier->setObjectName(QString::fromUtf8("pushButtonBezier"));
+        label_2 = new QLabel(groupBoxSetUp);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
 
-        gridLayout->addWidget(pushButtonBezier, 3, 0, 1, 1);
-
-        pushButtonPolygone = new QPushButton(groupBoxSetUp);
-        pushButtonPolygone->setObjectName(QString::fromUtf8("pushButtonPolygone"));
-
-        gridLayout->addWidget(pushButtonPolygone, 4, 0, 1, 1);
+        gridLayout->addWidget(label_2, 9, 0, 1, 1);
 
         pushButtonSquere = new QPushButton(groupBoxSetUp);
         pushButtonSquere->setObjectName(QString::fromUtf8("pushButtonSquere"));
 
-        gridLayout->addWidget(pushButtonSquere, 5, 0, 1, 1);
+        gridLayout->addWidget(pushButtonSquere, 6, 0, 1, 1);
 
         pushButtonCircle = new QPushButton(groupBoxSetUp);
         pushButtonCircle->setObjectName(QString::fromUtf8("pushButtonCircle"));
 
-        gridLayout->addWidget(pushButtonCircle, 6, 0, 1, 1);
+        gridLayout->addWidget(pushButtonCircle, 7, 0, 1, 1);
 
-        checkBoxFill = new QCheckBox(groupBoxSetUp);
-        checkBoxFill->setObjectName(QString::fromUtf8("checkBoxFill"));
+        pushButtonBezier = new QPushButton(groupBoxSetUp);
+        pushButtonBezier->setObjectName(QString::fromUtf8("pushButtonBezier"));
 
-        gridLayout->addWidget(checkBoxFill, 7, 0, 1, 1);
+        gridLayout->addWidget(pushButtonBezier, 4, 0, 1, 1);
 
-        label_2 = new QLabel(groupBoxSetUp);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        pushButtonDraw = new QPushButton(groupBoxSetUp);
+        pushButtonDraw->setObjectName(QString::fromUtf8("pushButtonDraw"));
 
-        gridLayout->addWidget(label_2, 8, 0, 1, 1);
+        gridLayout->addWidget(pushButtonDraw, 0, 0, 1, 1);
+
+        pushButtonPolygone = new QPushButton(groupBoxSetUp);
+        pushButtonPolygone->setObjectName(QString::fromUtf8("pushButtonPolygone"));
+
+        gridLayout->addWidget(pushButtonPolygone, 5, 0, 1, 1);
+
+        pushButtonClear = new QPushButton(groupBoxSetUp);
+        pushButtonClear->setObjectName(QString::fromUtf8("pushButtonClear"));
+
+        gridLayout->addWidget(pushButtonClear, 1, 0, 1, 1);
 
         comboBoxInterpolation = new QComboBox(groupBoxSetUp);
         comboBoxInterpolation->addItem(QString());
@@ -175,7 +171,17 @@ public:
         comboBoxInterpolation->addItem(QString());
         comboBoxInterpolation->setObjectName(QString::fromUtf8("comboBoxInterpolation"));
 
-        gridLayout->addWidget(comboBoxInterpolation, 8, 1, 1, 1);
+        gridLayout->addWidget(comboBoxInterpolation, 9, 1, 1, 1);
+
+        checkBoxFill = new QCheckBox(groupBoxSetUp);
+        checkBoxFill->setObjectName(QString::fromUtf8("checkBoxFill"));
+
+        gridLayout->addWidget(checkBoxFill, 8, 0, 1, 1);
+
+        pushButtonLine = new QPushButton(groupBoxSetUp);
+        pushButtonLine->setObjectName(QString::fromUtf8("pushButtonLine"));
+
+        gridLayout->addWidget(pushButtonLine, 3, 0, 1, 1);
 
 
         horizontalLayout->addWidget(groupBoxSetUp);
@@ -343,22 +349,23 @@ public:
         actionSave_Program_State->setText(QCoreApplication::translate("ImageViewerClass", "Save Program State", nullptr));
         actionOpen_Program_State->setText(QCoreApplication::translate("ImageViewerClass", "Open Program State", nullptr));
         groupBoxSetUp->setTitle(QCoreApplication::translate("ImageViewerClass", "Set Up", nullptr));
-        pushButtonDraw->setText(QCoreApplication::translate("ImageViewerClass", "Draw Object", nullptr));
-        pushButtonClear->setText(QCoreApplication::translate("ImageViewerClass", "Clear", nullptr));
         label->setText(QCoreApplication::translate("ImageViewerClass", "Algorithm", nullptr));
         comboBoxAlg->setItemText(0, QCoreApplication::translate("ImageViewerClass", "DDA", nullptr));
         comboBoxAlg->setItemText(1, QCoreApplication::translate("ImageViewerClass", "Bresenhamov", nullptr));
 
-        pushButtonBezier->setText(QCoreApplication::translate("ImageViewerClass", "Bezier Curve", nullptr));
-        pushButtonPolygone->setText(QCoreApplication::translate("ImageViewerClass", "Polygone", nullptr));
+        label_2->setText(QCoreApplication::translate("ImageViewerClass", "Interpolacia", nullptr));
         pushButtonSquere->setText(QCoreApplication::translate("ImageViewerClass", "Squere", nullptr));
         pushButtonCircle->setText(QCoreApplication::translate("ImageViewerClass", "Circle", nullptr));
-        checkBoxFill->setText(QCoreApplication::translate("ImageViewerClass", "Fill Polygone/Squere/Triangle", nullptr));
-        label_2->setText(QCoreApplication::translate("ImageViewerClass", "Interpolacia", nullptr));
+        pushButtonBezier->setText(QCoreApplication::translate("ImageViewerClass", "Bezier Curve", nullptr));
+        pushButtonDraw->setText(QCoreApplication::translate("ImageViewerClass", "Draw Object", nullptr));
+        pushButtonPolygone->setText(QCoreApplication::translate("ImageViewerClass", "Polygone", nullptr));
+        pushButtonClear->setText(QCoreApplication::translate("ImageViewerClass", "Clear", nullptr));
         comboBoxInterpolation->setItemText(0, QCoreApplication::translate("ImageViewerClass", "None", nullptr));
         comboBoxInterpolation->setItemText(1, QCoreApplication::translate("ImageViewerClass", "Nearest Neighbor", nullptr));
         comboBoxInterpolation->setItemText(2, QCoreApplication::translate("ImageViewerClass", "Barycentrick", nullptr));
 
+        checkBoxFill->setText(QCoreApplication::translate("ImageViewerClass", "Fill Polygone/Squere/Triangle", nullptr));
+        pushButtonLine->setText(QCoreApplication::translate("ImageViewerClass", "Line", nullptr));
         groupBox->setTitle(QCoreApplication::translate("ImageViewerClass", "Layers & Transformations", nullptr));
         groupBox_2->setTitle(QCoreApplication::translate("ImageViewerClass", "Transformations", nullptr));
         pushButtonRotate->setText(QCoreApplication::translate("ImageViewerClass", "Rotate", nullptr));
