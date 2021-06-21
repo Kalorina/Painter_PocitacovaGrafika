@@ -51,11 +51,18 @@ public:
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         spinBoxLayer = new QSpinBox(loginGroupBox);
         spinBoxLayer->setObjectName(QString::fromUtf8("spinBoxLayer"));
-        spinBoxLayer->setMinimum(1);
+        spinBoxLayer->setMinimum(0);
+        spinBoxLayer->setValue(0);
 
         gridLayout->addWidget(spinBoxLayer, 1, 0, 1, 2);
 
         tableWidget = new QTableWidget(loginGroupBox);
+        if (tableWidget->columnCount() < 2)
+            tableWidget->setColumnCount(2);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
         tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
 
         gridLayout->addWidget(tableWidget, 0, 0, 1, 2);
@@ -97,6 +104,10 @@ public:
     {
         Dialog->setWindowTitle(QCoreApplication::translate("Dialog", "Dialog", nullptr));
         loginGroupBox->setTitle(QString());
+        QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
+        ___qtablewidgetitem->setText(QCoreApplication::translate("Dialog", "Type", nullptr));
+        QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
+        ___qtablewidgetitem1->setText(QCoreApplication::translate("Dialog", "Layer", nullptr));
         bottonGroupBox->setTitle(QString());
     } // retranslateUi
 

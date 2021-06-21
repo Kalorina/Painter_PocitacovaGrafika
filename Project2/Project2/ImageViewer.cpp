@@ -511,7 +511,6 @@ void ImageViewer::loadObjects()
 	objects.clear();
 	QString number = data[0];
 	int numberOfObjects = number.toInt();
-	qDebug() << numberOfObjects;
 
 	for (int i = 1; i < data.size(); i++)
 	{
@@ -632,14 +631,6 @@ void ImageViewer::loadObjects()
 		}
 	}
 
-	if (!objects.isEmpty())
-	{
-		msgBox.setText("Data did load.");
-		msgBox.exec();
-	}
-
-	qDebug() << "Number of Objects" << objects.size();
-
 	/*for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i].print();
@@ -719,6 +710,7 @@ void ImageViewer::on_pushButtonLayer_clicked()
 {
 	objectLayers = new ObjectLayers(this);
 	connect(objectLayers, SIGNAL(accepted()), this, SLOT(objectLayersAccepted()));
+	objectLayers->setTable(objects);
 	objectLayers->exec();
 }
 void ImageViewer::on_pushButtonColorLayer_clicked()

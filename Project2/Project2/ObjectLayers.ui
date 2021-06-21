@@ -25,10 +25,24 @@
         <property name="minimum">
          <number>1</number>
         </property>
+        <property name="value">
+         <number>1</number>
+        </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="2">
-       <widget class="QTableWidget" name="tableWidget"/>
+       <widget class="QTableWidget" name="tableWidget">
+        <column>
+         <property name="text">
+          <string>Type</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Layer</string>
+         </property>
+        </column>
+       </widget>
       </item>
      </layout>
     </widget>

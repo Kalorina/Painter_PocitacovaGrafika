@@ -3,6 +3,7 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets>
 #include "ui_ObjectLayers.h"
+#include "ObjectClass.h"
 
 class ObjectLayers : public QDialog
 {
@@ -15,6 +16,25 @@ public:
 	}
 
 	int getLayer() { return layersUi->spinBoxLayer->value(); }
+	void setTable(QVector<Object> objects) {
+
+		layersUi->tableWidget->setRowCount(objects.size());
+		layersUi->tableWidget->setColumnCount(2);
+
+		for (int i = 0; i < objects.size(); i++)
+		{
+
+			QTableWidgetItem* meal1 = new QTableWidgetItem();
+			meal1->setText(objects[i].getType());
+
+			layersUi->tableWidget->setItem(i, 0, meal1);
+			QString l = QString::number(objects[i].getZbuffer());
+			QTableWidgetItem* layer = new QTableWidgetItem();
+			layer->setText(l);
+			layersUi->tableWidget->setItem(i, 1, layer);
+
+		}
+	}
 
 private:
 	Ui::Dialog* layersUi;
