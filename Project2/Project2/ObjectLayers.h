@@ -28,7 +28,7 @@ public:
 			meal1->setText(objects[i].getType());
 
 			layersUi->tableWidget->setItem(i, 0, meal1);
-			QString l = QString::number(objects[i].getZbuffer());
+			QString l = QString::number(objects[i].getZbuffer() + 1);
 			QTableWidgetItem* layer = new QTableWidgetItem();
 			layer->setText(l);
 			layersUi->tableWidget->setItem(i, 1, layer);

@@ -91,7 +91,7 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 		if (e->button() == Qt::RightButton && !polygoneMode && !circleMode && !bezierCurveMode && !squereMode && points.size() == 2)
 		{
 			//line
-			Object object = Object(points, color, objects.size() + 1, "line");
+			Object object = Object(points, color, objects.size(), "line");
 			objects.append(object);
 			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 			drawingActive = false;
@@ -100,7 +100,7 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 		if (e->button() == Qt::RightButton && !polygoneMode && !bezierCurveMode && !squereMode && circleMode && points.size() == 2)
 		{
 			//Circle
-			Object object = Object(points, color, objects.size() + 1, "circle");
+			Object object = Object(points, color, objects.size(), "circle");
 			objects.append(object);
 			w->drawCircle(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->checkBoxFill->isChecked());
 			drawingActive = false;
@@ -114,7 +114,7 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 			QVector<QPointF> newPoints;
 			newPoints.append(points[0]); newPoints.append(C); newPoints.append(points[1]); newPoints.append(D);
 			points = newPoints;
-			Object object = Object(points, color, objects.size() + 1, "square");
+			Object object = Object(points, color, objects.size(), "square");
 			objects.append(object);
 			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 			drawingActive = false;
@@ -123,7 +123,7 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 		if (e->button() == Qt::RightButton && polygoneMode && !squereMode && !bezierCurveMode)
 		{
 			//polygone
-			Object object = Object(points, color, objects.size() + 1, "polygone");
+			Object object = Object(points, color, objects.size(), "polygone");
 			objects.append(object);
 			w->draw(object.getPoints(), color, ui->comboBoxAlg->currentText(), ui->comboBoxInterpolation->currentText(), ui->checkBoxFill->isChecked());
 			drawingActive = false;
@@ -132,7 +132,7 @@ void ImageViewer::ViewerWidgetMouseButtonPress(ViewerWidget* w, QEvent* event)
 		if (e->button() == Qt::RightButton && !polygoneMode && !squereMode && bezierCurveMode)
 		{
 			//curve
-			Object object = Object(points, color, objects.size() + 1, "curve");
+			Object object = Object(points, color, objects.size(), "curve");
 			objects.append(object);
 			w->drawBezierCurve(object.getPoints(), color);
 			drawingActive = false;
@@ -620,7 +620,6 @@ void ImageViewer::loadObjects()
 			for (int j = 0; j < numberOfPoints; j++)
 			{
 				QString pointS = data[4 + i + j];
-				qDebug() << pointS;
 				QStringList list = pointS.split(QLatin1Char(','));
 				// list: [ "x", "y"]
 				QPointF point = QPointF(list.at(0).toInt(), list.at(1).toInt());
@@ -738,7 +737,7 @@ void ImageViewer::on_pushButtonColorPalette_clicked()
 }
 void ImageViewer::objectLayersAccepted()
 {
-	currentLayer = objectLayers->getLayer();
+	currentLayer = objectLayers->getLayer() - 1;
 	if (objects.size() < currentLayer)
 	{
 		msgBox.setText("Wrong layer.");

@@ -685,7 +685,7 @@ void ViewerWidget::scanLineTriangle(QVector<QPointF> points, QColor color, QStri
 			for (int i = x1; i < x2; i++)
 			{
 				QPointF t = QPointF(i, y);
-				QColor c = interpolationPixel(interpolation, points, t, color, c1, c2, c3);
+				QColor c = interpolationPixel(interpolation, points, t, c1, c2, c3);
 				setPixel(i, y, c);
 			}
 		}
@@ -706,7 +706,7 @@ void ViewerWidget::scanLineTriangle(QVector<QPointF> points, QColor color, QStri
 			for (int i = x1; i <= x2; i++)
 			{
 				QPointF t = QPointF(i, y);
-				QColor c = interpolationPixel(interpolation, points, t, color, c1, c2, c3);
+				QColor c = interpolationPixel(interpolation, points, t, c1, c2, c3);
 				setPixel(i, y, c);
 			}
 			x1 += c.getW();
@@ -717,7 +717,7 @@ void ViewerWidget::scanLineTriangle(QVector<QPointF> points, QColor color, QStri
 	update();
 }
 
-QColor ViewerWidget::nearestNeighbor(QVector<QPointF> points, QPointF p, QColor color, QColor c1, QColor c2, QColor c3)
+QColor ViewerWidget::nearestNeighbor(QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3)
 {
 	double x = points[0].x() - p.x();
 	double y = points[0].y() - p.y();
@@ -731,6 +731,7 @@ QColor ViewerWidget::nearestNeighbor(QVector<QPointF> points, QPointF p, QColor 
 	y = points[2].y() - p.y();
 	double d2 = sqrt(x * x + y * y);
 
+	QColor color;
 	if (d0 < d1 && d0 < d2)
 	{
 		color = c1;
@@ -746,7 +747,7 @@ QColor ViewerWidget::nearestNeighbor(QVector<QPointF> points, QPointF p, QColor 
 
 	return color;
 }
-QColor ViewerWidget::Barycentric(QVector<QPointF> points, QPointF p, QColor color, QColor c1, QColor c2, QColor c3)
+QColor ViewerWidget::Barycentric(QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3)
 {
 	points = sortByYThenByX(points);
 
@@ -779,19 +780,19 @@ QColor ViewerWidget::Barycentric(QVector<QPointF> points, QPointF p, QColor colo
 
 	return c;
 }
-QColor ViewerWidget::interpolationPixel(QString interpolation, QVector<QPointF> points, QPointF p, QColor color, QColor c1, QColor c2, QColor c3)
+QColor ViewerWidget::interpolationPixel(QString interpolation, QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3)
 {
 	if (interpolation == "None")
 	{
-		return color;
+		return QColor(255, 0, 0);
 	}
 	if (interpolation == "Nearest Neighbor")
 	{
-		return nearestNeighbor(points, p, color, c1, c2, c3);
+		return nearestNeighbor(points, p, c1, c2, c3);
 	}
 	if(interpolation == "Barycentrick")
 	{
-		return Barycentric(points, p, color, c1, c2, c3);
+		return Barycentric(points, p, c1, c2, c3);
 	}
 }
 
@@ -967,6 +968,216 @@ void ViewerWidget::clear(QColor color)
 	update();
 }
 
+//zBuffer
+float ViewerWidget::interpolationZ(QVector<QPointF> points, QPointF p, QVector<float> zCoordinates)
+{
+	points = sortByYThenByX(points);
+
+	QPointF u = QPointF(points[1].x() - points[0].x(), points[1].y() - points[0].y());
+	QPointF v = QPointF(points[2].x() - points[0].x(), points[2].y() - points[0].y());
+	double nA = u.x() * v.y() - u.y() * v.x();
+	double a = sqrt(nA * nA) / 2;
+
+	QPointF u0 = QPointF(points[1].x() - p.x(), points[1].y() - p.y());
+	QPointF v0 = QPointF(points[2].x() - p.x(), points[2].y() - p.y());
+	double nA0 = u0.x() * v0.y() - u0.y() * v0.x();
+	double a0 = sqrt(nA0 * nA0) / 2;
+
+	QPointF u1 = QPointF(points[0].x() - p.x(), points[0].y() - p.y());
+	QPointF v1 = QPointF(points[2].x() - p.x(), points[2].y() - p.y());
+	double nA1 = u1.x() * v1.y() - u1.y() * v1.x();
+	double a1 = sqrt(nA1 * nA1) / 2;
+
+	double lambda0 = a0 / a;
+	double lambda1 = a1 / a;
+
+	lambda0 = sqrt(lambda0 * lambda0);
+	lambda1 = sqrt(lambda1 * lambda1);
+	double lambda2 = 1.0 - lambda0 - lambda1;
+
+	float z = lambda0 * zCoordinates[0] + lambda1 * zCoordinates[1] + lambda2 * zCoordinates[2];
+	return z;
+}
+void ViewerWidget::drawBuffer()
+{
+
+	for (int i = 0; i < img->width(); i++)
+	{
+		for (int j = 0; j < img->height(); j++)
+		{
+			setPixel(i, j, fBuffer[i][j]);
+		}
+	}
+	update();
+}
+
+void ViewerWidget::clearBuffers()
+{
+	if (zBuffer == nullptr || fBuffer == nullptr) {
+		return;
+	}
+
+	for (int i = 0; i < img->width(); i++)
+	{
+		delete zBuffer[i];
+	}
+	delete zBuffer;
+	zBuffer = nullptr;
+
+	for (int i = 0; i < img->width(); i++)
+	{
+		delete fBuffer[i];
+	}
+	delete fBuffer;
+	fBuffer = nullptr;
+}
+
+void ViewerWidget::updateBuffers(QVector<QPointF> points, QVector<float> zCoordinates, QVector<QColor> colors)
+{
+	if (zBuffer == nullptr)
+	{
+		zBuffer = new float* [img->width()];
+		for (int i = 0; i < img->width(); i++)
+		{
+			zBuffer[i] = new float[img->height()];
+		}
+		for (int i = 0; i < img->width(); i++)
+		{
+			for (int j = 0; j < img->height(); j++)
+			{
+				zBuffer[i][j] = std::numeric_limits<float>::min();
+			}
+		}
+	}
+
+	if (fBuffer == nullptr)
+	{
+		fBuffer = new QColor * [img->width()];
+		for (int i = 0; i < img->width(); i++)
+		{
+			fBuffer[i] = new QColor[img->height()];
+		}
+		for (int i = 0; i < img->width(); i++)
+		{
+			for (int j = 0; j < img->height(); j++)
+			{
+				fBuffer[i][j] = QColor(255, 255, 255);
+			}
+		}
+	}
+
+	scanLineBuffer(points, zCoordinates, colors[0], colors[1], colors[2]);
+}
+void ViewerWidget::scanLineBuffer(QVector<QPointF> points, QVector<float> zCoordinates, QColor c1, QColor c2, QColor c3)
+{
+	points = sortByYThenByX(points);
+
+	QVector<Edge> edges(4);
+	Edge a, b, c, d;
+	QPointF p; // priesecnik
+
+	if ((points[0].y() == points[1].y() && points[1].y() == points[2].y()) ||
+		(points[0].x() == points[1].x() && points[1].x() == points[2].x()))
+	{
+		return;
+	}
+	if (points[0].y() == points[1].y())
+	{
+		//spodny troj
+		a = Edge(points[0], points[2]);
+		b = Edge(points[1], points[2]);
+
+	}
+	else if (points[1].y() == points[2].y())
+	{
+		//horny troj
+		a = Edge(points[0], points[1]);
+		b = Edge(points[0], points[2]);
+	}
+	else
+	{
+		double dy = points[2].y() - points[0].y();
+		double dx = points[2].x() - points[0].x();
+		double m = dy / dx;
+		double w;
+		if (m == 0) { w = 0; }
+		else { w = 1.0 / m; }
+		double x = (points[1].y() - points[0].y()) * w + points[0].x();
+		p.setX(x);
+		p.setY(points[1].y());
+
+		if (points[1].x() > p.x())
+		{
+			a = Edge(points[0], p);
+			b = Edge(points[0], points[1]);
+
+			c = Edge(p, points[2]);
+			d = Edge(points[1], points[2]);
+		}
+		else
+		{
+			a = Edge(points[0], points[1]);
+			b = Edge(points[0], p);
+
+			c = Edge(points[1], points[2]);
+			d = Edge(p, points[2]);
+		}
+	}
+
+	double y = a.getYZ();
+	double yMax = b.getYK();
+	double x1 = a.getXZ();
+	double x2 = b.getXZ();
+
+	while (y < yMax)
+	{
+		if (x1 != x2)
+		{
+			for (int i = x1; i < x2; i++)
+			{
+				QPointF t = QPointF(i, y);
+				float z = interpolationZ(points, t, zCoordinates);
+				QColor color = interpolationPixel("Barycentrick", points, t, c1, c2, c3);
+
+				if (zBuffer[i][(int)y] < z)
+				{
+					zBuffer[i][(int)y] = z;
+					fBuffer[i][(int)y] = color;
+				}
+			}
+		}
+		x1 += a.getW();
+		x2 += b.getW();
+		y++;
+	}
+
+	if (!p.isNull())
+	{
+		y = c.getYZ();
+		yMax = c.getYK();
+		x1 = c.getXZ();
+		x2 = d.getXZ();
+
+		while (y <= yMax)
+		{
+			for (int i = x1; i <= x2; i++)
+			{
+				QPointF t = QPointF(i, y);
+				float z = interpolationZ(points, t, zCoordinates);
+				QColor color = interpolationPixel("Barycentrick", points, t, c1, c2, c3);
+
+				if (zBuffer[i][(int)y] < z)
+				{
+					zBuffer[i][(int)y] = z;
+					fBuffer[i][(int)y] = color;
+				}
+			}
+			x1 += c.getW();
+			x2 += d.getW();
+			y++;
+		}
+	}
+}
 //Slots
 void ViewerWidget::paintEvent(QPaintEvent* event)
 {

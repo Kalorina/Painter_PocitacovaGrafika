@@ -13,10 +13,11 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QTableWidget>
@@ -29,7 +30,8 @@ class Ui_Dialog
 public:
     QVBoxLayout *verticalLayout_3;
     QGroupBox *loginGroupBox;
-    QGridLayout *gridLayout;
+    QFormLayout *formLayout;
+    QLabel *label;
     QSpinBox *spinBoxLayer;
     QTableWidget *tableWidget;
     QGroupBox *bottonGroupBox;
@@ -47,14 +49,19 @@ public:
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         loginGroupBox = new QGroupBox(Dialog);
         loginGroupBox->setObjectName(QString::fromUtf8("loginGroupBox"));
-        gridLayout = new QGridLayout(loginGroupBox);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        formLayout = new QFormLayout(loginGroupBox);
+        formLayout->setObjectName(QString::fromUtf8("formLayout"));
+        label = new QLabel(loginGroupBox);
+        label->setObjectName(QString::fromUtf8("label"));
+
+        formLayout->setWidget(1, QFormLayout::LabelRole, label);
+
         spinBoxLayer = new QSpinBox(loginGroupBox);
         spinBoxLayer->setObjectName(QString::fromUtf8("spinBoxLayer"));
-        spinBoxLayer->setMinimum(0);
-        spinBoxLayer->setValue(0);
+        spinBoxLayer->setMinimum(1);
+        spinBoxLayer->setValue(1);
 
-        gridLayout->addWidget(spinBoxLayer, 1, 0, 1, 2);
+        formLayout->setWidget(1, QFormLayout::FieldRole, spinBoxLayer);
 
         tableWidget = new QTableWidget(loginGroupBox);
         if (tableWidget->columnCount() < 2)
@@ -65,7 +72,7 @@ public:
         tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
         tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
 
-        gridLayout->addWidget(tableWidget, 0, 0, 1, 2);
+        formLayout->setWidget(0, QFormLayout::SpanningRole, tableWidget);
 
 
         verticalLayout_3->addWidget(loginGroupBox);
@@ -104,6 +111,7 @@ public:
     {
         Dialog->setWindowTitle(QCoreApplication::translate("Dialog", "Dialog", nullptr));
         loginGroupBox->setTitle(QString());
+        label->setText(QCoreApplication::translate("Dialog", "Layer to Edit", nullptr));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QCoreApplication::translate("Dialog", "Type", nullptr));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);

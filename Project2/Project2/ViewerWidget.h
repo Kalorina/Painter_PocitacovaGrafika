@@ -11,6 +11,8 @@ private:
 	QRgb* data = nullptr;
 	QPainter* painter = nullptr;
 
+	float** zBuffer = nullptr;
+	QColor** fBuffer = nullptr;
 
 public:
 	ViewerWidget(QString viewerName, QSize imgSize, QWidget* parent = Q_NULLPTR);
@@ -58,10 +60,16 @@ public:
 	QVector<QPointF> sortByYThenByX(QVector<QPointF> points);
 
 	void scanLineTriangle(QVector<QPointF> points, QColor color, QString interpolation);
-	QColor nearestNeighbor(QVector<QPointF> points, QPointF p, QColor color, QColor c1, QColor c2, QColor c3);
-	QColor Barycentric(QVector<QPointF> points, QPointF p, QColor color, QColor c1, QColor c2, QColor c3);
-	QColor interpolationPixel(QString interpolation, QVector<QPointF> points, QPointF p, QColor color, QColor c1, QColor c2, QColor c3);
+	QColor nearestNeighbor(QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3);
+	QColor Barycentric(QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3);
+	QColor interpolationPixel(QString interpolation, QVector<QPointF> points, QPointF p, QColor c1, QColor c2, QColor c3);
 
+	//zBuffer
+	float interpolationZ(QVector<QPointF> points, QPointF p, QVector<float> zCoordinates);
+	void updateBuffers(QVector<QPointF> points, QVector<float> zCoordinates, QVector<QColor> colors);
+	void scanLineBuffer(QVector<QPointF> points, QVector<float> zCoordinates, QColor c1, QColor c2, QColor c3);
+	void drawBuffer();
+	void clearBuffers();
 	void clear(QColor color = Qt::white);
 
 public slots:
