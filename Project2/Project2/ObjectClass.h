@@ -27,9 +27,11 @@ public:
 	int getNumberOfPoints() { return points.size(); }
 
 	void print() {
-		qDebug() << "Points: " << points;
-		qDebug() << "Color: " << color;
-		qDebug() << "Z buffer int: " << zBuffer;
+
 		qDebug() << "Object type: " << type;
+		qDebug() << "Color: " << color;
+		qDebug() << "Fill: " << fillOn;
+		qDebug() << "Layer int: " << zBuffer;
+		qDebug() << "Points: " << points;
 	}
 };

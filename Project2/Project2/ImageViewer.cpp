@@ -294,6 +294,7 @@ bool ImageViewer::saveImage(QString filename)
 void ImageViewer::clearImage()
 {
 	ViewerWidget* w = getCurrentViewerWidget();
+	w->createBuffers();
 	w->clearBuffers();
 	w->clear();
 }
@@ -412,7 +413,7 @@ void ImageViewer::on_actionSave_Program_State_triggered()
 		{
 			out << objects[i].getType() << "\n";
 			out << objects[i].getColor().red() << "," << objects[i].getColor().green() << "," << objects[i].getColor().blue() << "\n";
-			out << objects[i].getFill();
+			out << objects[i].getFill() << "\n";
 			out << objects[i].getZbuffer() << "\n";
 			out << objects[i].getNumberOfPoints() << "\n";
 			for (int j = 0; j < objects[i].getPoints().size(); j++)
@@ -424,6 +425,10 @@ void ImageViewer::on_actionSave_Program_State_triggered()
 		File.close();
 
 		qDebug() << "data saved.";
+		for (int i = 0; i < objects.size(); i++)
+		{
+			objects[i].print();
+		}
 		msgBox.setText("Data did save.");
 		msgBox.exec();
 	}
@@ -432,6 +437,7 @@ void ImageViewer::on_actionSave_Program_State_triggered()
 		qDebug() << File.errorString();
 		return;
 	}
+
 }
 void ImageViewer::on_actionOpen_Program_State_triggered()
 {
@@ -467,7 +473,7 @@ void ImageViewer::on_actionOpen_Program_State_triggered()
 		msgBox.setText("Data did load.");
 		msgBox.exec();
 	}
-
+	objects.clear();
 	loadObjects();
 	updateImage();
 }
@@ -518,7 +524,7 @@ void ImageViewer::loadObjects()
 	for (int i = 1; i < data.size(); i++)
 	{
 		QString type = data[i];
-		//qDebug() << data[i];
+		qDebug() << data[i];
 		if (type == "line")
 		{
 			Object object;
@@ -528,16 +534,8 @@ void ImageViewer::loadObjects()
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
-			object.setZbuffer(data[i + 2].toInt());
-			bool fill;
-			if (data[i+3] == "00")
-			{
-				object.setFill(true);
-			}
-			else
-			{
-				object.setFill(false);
-			}
+			object.setFill(false);
+			object.setZbuffer(data[i + 3].toInt());
 			QVector<QPointF> points;
 			for (int j = 0; j < 2; j++)
 			{
@@ -559,16 +557,8 @@ void ImageViewer::loadObjects()
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
-			object.setZbuffer(data[i + 2].toInt());
-			bool fill;
-			if (data[i + 3] == "00")
-			{
-				object.setFill(true);
-			}
-			else
-			{
-				object.setFill(false);
-			}
+			object.setFill(false);
+			object.setZbuffer(data[i + 3].toInt());
 			QVector<QPointF> points;
 			for (int j = 0; j < 2; j++)
 			{
@@ -590,9 +580,8 @@ void ImageViewer::loadObjects()
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
-			object.setZbuffer(data[i + 2].toInt());
 			bool fill;
-			if (data[i + 3] == "00")
+			if (data[i + 2] == "1")
 			{
 				object.setFill(true);
 			}
@@ -600,6 +589,7 @@ void ImageViewer::loadObjects()
 			{
 				object.setFill(false);
 			}
+			object.setZbuffer(data[i + 3].toInt());
 			QVector<QPointF> points;
 			for (int j = 0; j < 4; j++)
 			{
@@ -612,7 +602,7 @@ void ImageViewer::loadObjects()
 			object.setPoints(points);
 			objects.append(object);
 		}
-		if (type == "polynome")
+		if (type == "polygone")
 		{
 			Object object;
 			object.setType(type);
@@ -621,9 +611,8 @@ void ImageViewer::loadObjects()
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
-			object.setZbuffer(data[i + 2].toInt());
 			bool fill;
-			if (data[i + 3] == "00")
+			if (data[i + 2] == "1")
 			{
 				object.setFill(true);
 			}
@@ -631,6 +620,7 @@ void ImageViewer::loadObjects()
 			{
 				object.setFill(false);
 			}
+			object.setZbuffer(data[i + 3].toInt());
 			int numberOfPoints = data[i + 4].toInt();
 			QVector<QPointF> points;
 			for (int j = 0; j < numberOfPoints; j++)
@@ -653,16 +643,8 @@ void ImageViewer::loadObjects()
 			QColor color;
 			color.setRed(list.at(0).toInt()); color.setGreen(list.at(1).toInt()); color.setBlue(list.at(2).toInt());
 			object.setColor(color);
-			object.setZbuffer(data[i + 2].toInt());
-			bool fill;
-			if (data[i + 3] == "00")
-			{
-				object.setFill(true);
-			}
-			else
-			{
-				object.setFill(false);
-			}
+			object.setFill(false);
+			object.setZbuffer(data[i + 3].toInt());
 			int numberOfPoints = data[i + 4].toInt();
 			QVector<QPointF> points;
 			for (int j = 0; j < numberOfPoints; j++)
@@ -678,10 +660,10 @@ void ImageViewer::loadObjects()
 		}
 	}
 
-	/*for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i].print();
-	}*/
+	}
 }
 void ImageViewer::on_pushButtonPolygone_clicked()
 {
