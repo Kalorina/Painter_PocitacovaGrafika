@@ -1022,7 +1022,11 @@ void ViewerWidget::setPixelZ(int x, int y, int z, QColor color)
 {
 	if (isInside(x, y)) 
 	{
-		fBuffer[x][y] = color;
+		if (z > zBuffer[x][y])
+		{
+			fBuffer[x][y] = color;
+			zBuffer[x][y] = z;
+		}
 	}
 }
 void ViewerWidget::deleteBuffers()

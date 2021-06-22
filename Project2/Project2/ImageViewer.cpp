@@ -823,19 +823,19 @@ void ImageViewer::updateLayer(int newLayer)
 	Object object = objects[currentLayer];
 	objects.remove(currentLayer);
 	objects.insert(newLayer, object);
-	
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i].setZbuffer(i);
-		objects[i].print();
+		//objects[i].print();
 	}
 }
 void ImageViewer::on_pushButtonChangeLayer_clicked()
 {
-	int newLayer = ui->spinBoxNewLayer->value();
-	qDebug() << newLayer;
-	currentLayer = newLayer;
-	if (objects.size() < currentLayer)
+	int newLayer = ui->spinBoxNewLayer->value() - 1;
+	//qDebug() << newLayer;
+	//currentLayer = newLayer;
+	if (objects.size() < newLayer)
 	{
 		msgBox.setText("Wrong layer.");
 		msgBox.exec();
